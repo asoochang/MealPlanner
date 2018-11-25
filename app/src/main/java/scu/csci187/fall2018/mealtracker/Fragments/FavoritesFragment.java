@@ -49,14 +49,13 @@ public class FavoritesFragment extends Fragment {
         return view;
     }
 
-    /*
-        TODO: implement populateListDataFromAPI()
-     */
     public void populateFavoritesListFromAPI() {
         meals = new ArrayList<>();
         pics = new ArrayList<>();
 
-
+        /*
+            TODO: DB call to get list of Favorited Meals (primaryKey is bookmarkURL)
+         */
         // DB Calls to build List<string> meals/pics for search
         recipeRecords = this.getRecipeRecordsFromDB();
 
@@ -98,7 +97,6 @@ public class FavoritesFragment extends Fragment {
         rvFavorites.setAdapter(favoritesAdapter);
     }
 
-    // Create then display Meal Detail fragment using mealName
     public void showMealDetail(String bookmarkURL) {
         MealDetailFragment newFragment = new MealDetailFragment();
         Bundle b = new Bundle();

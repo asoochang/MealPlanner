@@ -79,13 +79,14 @@ public class HomeFragment extends Fragment  {
 
     public void populateListDataFromDB() {
         /*
+            TODO:
             Call the DB accession file;
             Return list here as meals;
          */
 
         // Meals should be given DB values (bookmark links)
         ArrayList<String> bookmarkedMeals = new ArrayList<>();
-        ArrayList<Recipe> recipes = new ArrayList<>();
+        ArrayList<Recipe> recipes;
 
         bookmarkedMeals.add("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f");
         bookmarkedMeals.add("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98");
@@ -169,7 +170,7 @@ public class HomeFragment extends Fragment  {
         rvHistory.setAdapter(historyAdapter);
     }
 
-    // Create then display Meal Detail fragment using mealName
+    // Create then display Meal Detail fragment using bookmarkURL
     public void showMealDetail(String bookmarkURL) {
         MealDetailFragment newFragment = new MealDetailFragment();
         Bundle b = new Bundle();
@@ -181,7 +182,7 @@ public class HomeFragment extends Fragment  {
         transaction.commit();
     }
 
-    // Create then display Meal Detail fragment using mealName
+    // Create then display Meal Detail fragment using bookmarkURL
     public void showUpcomingMealDetail(String bookmarkURL, int index) {
         MealDetailFragment newFragment = new MealDetailFragment();
         Bundle b = new Bundle();

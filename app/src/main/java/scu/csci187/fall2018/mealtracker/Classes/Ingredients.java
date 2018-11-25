@@ -16,7 +16,6 @@ public class Ingredients {
         try {
             temp = value.getJSONObject(index);
         } catch (JSONException e) {
-            System.out.println("Wah Wah Waaaaaah - Something went wrong getting a JSONObject at that indexs");
             temp = null;
         }
         Ingredient ingredient = new Ingredient(temp);

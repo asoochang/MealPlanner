@@ -73,17 +73,17 @@ public class MealDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mealdetail_layout, container, false);
-        bindViews(view);
-        attachUIListeners();
-        setupRatingBarAndFavorite();
-
-        ingredientsList = new ArrayList<>();
 
         if(mealName.isEmpty()) {
             getFragmentManager().popBackStackImmediate();   // go back to previous fragment
         }
         else {
+            ingredientsList = new ArrayList<>();
+
+            bindViews(view);
+            attachUIListeners();
             populateMealData();
+            setupRatingBarAndFavorite();
             if(showMadeButton)
                 buttonMadeThis.setVisibility(View.VISIBLE);
         }
@@ -100,9 +100,6 @@ public class MealDetailFragment extends Fragment {
             madeMealListener = (MealDetailFragment.MadeMealListener) context;
             scheduleMealListener = (MealDetailFragment.ScheduleMealListener) context;
         }
-   /*     else if (context instanceof MealDetailFragment.ScheduleMealListener) {
-            scheduleMealListener = (MealDetailFragment.ScheduleMealListener) context;
-        }*/
         else {
             throw new RuntimeException(context.toString()
                     + " must implement MadeMealListener and/or ScheduleMealListener");
@@ -132,9 +129,6 @@ public class MealDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent goToRecipe = new Intent(getContext(), ViewRecipeActivity.class);
-                /*
-                    TODO: Grab recipe URL via API using MealName
-                 */
                 goToRecipe.putExtra("recipeURL", recipeURL);
                 startActivity(goToRecipe);
             }
@@ -158,7 +152,8 @@ public class MealDetailFragment extends Fragment {
                     mealIsFavorited = false;
                     ivFavorite.setImageResource(R.drawable.ic_favorite_no);
                     updateMealFavoriteInDB(mealIsFavorited);
-                } else {
+                }
+                else {
                     mealIsFavorited = true;
                     ivFavorite.setImageResource(R.drawable.ic_favorite);
                     updateMealFavoriteInDB(mealIsFavorited);
@@ -174,7 +169,8 @@ public class MealDetailFragment extends Fragment {
                 if(index == -1)
                     Toast.makeText(getContext(), "ERROR - INDEX: -1, bundle index null", Toast.LENGTH_SHORT).show();
                 else {
-                    madeMealListener.madeMealUpdateHistory(index);
+                    //TO TAKE OUT: (leave in case need to revert) madeMealListener.madeMealUpdateHistory(index);
+                    updateMadeMealInDB();
                 }
             }
         });
@@ -194,7 +190,7 @@ public class MealDetailFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                scheduleMealInDB(bookmarkURL, mealName, year, month+1, dayOfMonth);
+                                scheduleMealInDB(year, month+1, dayOfMonth);
                             }
                         }, year, month, day);
                 picker.show();
@@ -204,7 +200,8 @@ public class MealDetailFragment extends Fragment {
 
     private void setupRatingBarAndFavorite() {
         /*
-            TODO: Query DB for is meal favorited, meal rating
+            TODO: Query DB for: is meal favorited, meal rating
+            use  String vars   mealName/bookmarkURL to query DB
          */
         mealIsFavorited = true; // query result here
         if(mealIsFavorited)
@@ -218,29 +215,36 @@ public class MealDetailFragment extends Fragment {
     private void updateUserMealRatingInDB(int newRating) {
         /*
             TODO: Write meal rating to DB for User
+            use  String vars   mealName/bookmarkURL to write to DB
          */
     }
     private void updateMealFavoriteInDB(boolean isFavorited) {
         /*
             TODO: Write meal favorite to DB for User
+            use  String vars   mealName/bookmarkURL to write to DB
          */
     }
 
-    private void scheduleMealInDB(String uniqueID, String mealName, int year, int month, int day) {
+    private void scheduleMealInDB(int year, int month, int day) {
         /*
-            TODO: DB call to add Meal to Scheduled Meals table
+            TODO: DB call to add Meal to Scheduled Meals
+            use String vars bookmarkURL and mealName (they are public MealDetailFragment attributes)
          */
         Toast.makeText(getContext(), "Scheduled " + mealName + " for " + month + "/" + day + "/" + year, Toast.LENGTH_LONG).show();
         // Once DB is updated, create and nav to new HomeFragment to re-initialize Upcoming/History lists, clear backstack
-        scheduleMealListener.showHomeScreenAfterScheduleMeal();
+                //TO TAKE OUT: (leave in case need to revert) scheduleMealListener.showHomeScreenAfterScheduleMeal();
+    }
 
+    private void updateMadeMealInDB() {
+        /*
+            TODO: DB call to update "made this" flag for meal
+         */
     }
 
     public void populateMealData() {
         tvMealName.setText(mealName);
         new ImageLoaderFromUrl(ivMealPic).execute(picURL);
 
-        mealRatingBar.setRating(3);
         Ingredient ingredient;
         for (int i = 0; i < r.ingredients().length(); ++i) {
             ingredient = r.ingredients().getIngredientAtIndex(i);
@@ -252,7 +256,6 @@ public class MealDetailFragment extends Fragment {
                 android.R.layout.simple_list_item_1, ingredientsList);
         lvIngredients.setAdapter(ingredientsAdapter);
 
-        // populate pic, nutritional info, ingredients using mealName + API
 
         /*
             TODO: grab meal data from API, DB (rating) for display in MealDetail
@@ -274,6 +277,6 @@ public class MealDetailFragment extends Fragment {
     }
 
     public interface MadeMealListener {
-        void madeMealUpdateHistory(int index);
+        void afterMadeMealClick();
     }
 }

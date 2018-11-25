@@ -19,8 +19,6 @@ public class RecipeRecord {
         int year = Integer.parseInt(splitInput[yearIndex]);
 
         this.date = new GregorianCalendar(year, month, day).getTime();
-
-
     }
 
     public RecipeRecord (String bookmarkURL, String name, String dateString, String picURL) {

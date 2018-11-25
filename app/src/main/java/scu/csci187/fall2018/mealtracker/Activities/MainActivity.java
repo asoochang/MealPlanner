@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
         Fragment frag;
         switch (navItemIndex) {
             case 0:
-                frag = (HomeFragment) getSupportFragmentManager().findFragmentByTag(TAG_HOME);
+                frag = getSupportFragmentManager().findFragmentByTag(TAG_HOME);
                 if(frag == null) {
                     HomeFragment homeFrag = new HomeFragment();
 
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity
                 else
                     return frag;
             case 1:
-                frag = (SearchFragment) getSupportFragmentManager().findFragmentByTag(TAG_SEARCH);
+                frag = getSupportFragmentManager().findFragmentByTag(TAG_SEARCH);
                 if(frag == null) {
                     searchText = "";
                     return new SearchFragment();
@@ -179,19 +179,19 @@ public class MainActivity extends AppCompatActivity
                 else
                     return frag;
             case 2:
-                frag = (FavoritesFragment) getSupportFragmentManager().findFragmentByTag(TAG_FAVORITES);
+                frag = getSupportFragmentManager().findFragmentByTag(TAG_FAVORITES);
                 if(frag == null)
                     return new FavoritesFragment();
                 else
                     return frag;
             case 3:
-                frag = (ShoppingListFragment) getSupportFragmentManager().findFragmentByTag(TAG_SHOPPING);
+                frag = getSupportFragmentManager().findFragmentByTag(TAG_SHOPPING);
                 if(frag == null)
                     return new ShoppingListFragment();
                 else
                     return frag;
             case 4:
-                frag = (PreferencesFragment) getSupportFragmentManager().findFragmentByTag(TAG_PREFERENCES);
+                frag = getSupportFragmentManager().findFragmentByTag(TAG_PREFERENCES);
                 if(frag == null)
                     return new PreferencesFragment();
                 else
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        if(CURRENT_TAG == TAG_FILTERS) {
+        if(CURRENT_TAG.equals(TAG_FILTERS)) {
             Toast a = Toast.makeText(this, "back press current tag filters", Toast.LENGTH_SHORT);
             a.setGravity(Gravity.CENTER,0,0);
             a.show();
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.frame, frag, TAG_SEARCH);
             fragmentTransaction.commit();
         }
-        else if(CURRENT_TAG == TAG_HOME && getSupportFragmentManager().getBackStackEntryCount() == 0)
+        else if(CURRENT_TAG.equals(TAG_HOME) && getSupportFragmentManager().getBackStackEntryCount() == 0)
             return;
         else
             super.onBackPressed();
@@ -246,14 +246,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     // Implementation of MadeMealListener interface
-    public void madeMealUpdateHistory(int index) {
+    public void afterMadeMealClick() {
         /*
-            TODO: UPDATE ALL DATA ARRAYS, WRITE TO DB
-                remove item@index for upcoming
-                add meal to History
+            todo: CLEAN UP
          */
         HomeFragment homeFrag = (HomeFragment) getSupportFragmentManager().findFragmentByTag(TAG_HOME);
-        homeFrag.notifyAdaptersDataChanged(index);
+        //homeFrag.notifyAdaptersDataChanged(index);
         navToFragment(homeFrag, TAG_HOME);
     }
 
@@ -272,7 +270,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
                 android.R.anim.fade_out);
         fragmentTransaction.replace(R.id.frame, fragment, tag);
-        if(tag != TAG_FILTERS) {
+        if(!tag.equals(TAG_FILTERS)) {
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();

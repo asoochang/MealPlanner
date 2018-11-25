@@ -92,7 +92,8 @@ public class QueryParam {
         }
 
         // Set query param
-        result = result + "q=" + this.query;
+        result = result + "q=" + URLEncoder.encode(this.query);
+
         if (this.healthLabels.size() < 1) {
             // Do Nothing
         } else {

@@ -65,6 +65,19 @@ public class UpcomingRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingRe
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.itemName.setText(meals.get(position));
         holder.itemDate.setText(dates.get(position));
+        /*
+            TODO: DB CALL TO GET IF MEAL IS SCHEDULED FOR BREAKFAST/LUNCH/DINNER
+            int mealOfDay = 0;  // 0 = breakfast, 1 = lunch, 2 = dinner
+         */
+        int mealOfDay = 0;
+        switch(mealOfDay) {
+            case 0: holder.bldText.setText("breakfast");
+                break;
+            case 1: holder.bldText.setText("lunch");
+                break;
+            case 2: holder.bldText.setText("dinner");
+        }
+
         new ImageLoaderFromUrl(holder.imView).execute(picUrls.get(position));
     }
 
@@ -78,6 +91,7 @@ public class UpcomingRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingRe
         private ImageView imView;
         private TextView itemDate;
         private TextView itemName;
+        private TextView bldText;
         private LinearLayout homeLayout;
 
         public MyViewHolder(View itemView) {
@@ -86,6 +100,7 @@ public class UpcomingRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingRe
             imView = itemView.findViewById(R.id.listItemPic);
             itemDate = itemView.findViewById(R.id.listItemDate);
             itemName = itemView.findViewById(R.id.listItemName);
+            bldText = itemView.findViewById(R.id.bldText);
             homeLayout = itemView.findViewById(R.id.homeLinearLayout);
             itemView.setOnClickListener(this);
         }

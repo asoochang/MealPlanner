@@ -56,8 +56,6 @@ public class PreferencesTranslator {
             qp.setTimeMin(0);
             qp.setTimeMax(userPref.getMaxTimeInMinutes());
 
-
-            // TODO check these are correct terms.
             if (userPref.isVegan()) {
                 qp.addHealthLabels("vegan");
             }

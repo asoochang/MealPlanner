@@ -49,7 +49,8 @@ public class ShoppingListFragment extends Fragment {
         mealIds = new ArrayList<>();
 
         /*
-            TODO: getShoppingListFromDisk()
+            TODO: getShoppingListFromDisk() = returns ArrayList<SQLiteMeal>
+                  SQLiteMeal =  mealName (string) + ingredients (ArrayList<SQLiteIngredient>)
          */
         mealList = new ArrayList<>();
         mealList.add("Borscht");
@@ -68,9 +69,6 @@ public class ShoppingListFragment extends Fragment {
             container.addView(name);
             mealIds.add(name.getId());
 
-            /*
-                TODO: lookup ingredients list, store in ArrayList ingredients
-            */
             ingredients.add("1/2 oz chicken");
             ingredients.add("5 lbs salt");
             ingredients.add("1 bay leaf");
@@ -156,6 +154,7 @@ public class ShoppingListFragment extends Fragment {
 
     /*
         TODO: SQLite read/write shoppinglist to disk
+            done through Peter's DBManager class
      */
     private ArrayList<String> readShoppingListFromDisk() {
 

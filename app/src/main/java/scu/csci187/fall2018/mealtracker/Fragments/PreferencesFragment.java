@@ -77,7 +77,7 @@ public class PreferencesFragment extends Fragment {
     public void populatePreferencesFromDB(){
         UserPreferences prefFromDb; // = someDBCall
         /*
-            TODO: GET FROM DATABASE
+            TODO: GET PREFRENCES FROM DATABASE
          */
     }
 

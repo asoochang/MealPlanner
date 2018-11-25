@@ -73,8 +73,6 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
         return meals.size();
     }
 
-
-
     // Stores and recycles views as they are scrolled off screen
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imView;
@@ -95,7 +93,6 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
             Toast.makeText(view.getContext(), "CLICKY", Toast.LENGTH_SHORT).show();
             clickListener.onClick(view, getAdapterPosition()); // call the onClick in the OnItemClickListener
         }
-
     }
 
     // parent activity will implement this method to respond to click events

@@ -155,7 +155,6 @@ public class SearchFragment extends Fragment {
 
         searchString = searchText.getText().toString();
 
-        // Get filters
         // Construct Query
         QueryParam queryParam = new QueryParam();
 
@@ -171,19 +170,10 @@ public class SearchFragment extends Fragment {
         // execute the search
 
         Query query = new APIHandler().search(queryParam);
-
-
-
-
-
-
         populateSearchListFromAPI(query);
         createAndAttachRVAdapter();
     }
 
-    /*
-        TODO: implement populateListDataFromAPI()
-     */
     private void populateSearchListFromAPI(Query query) {
 
         // get Recipes from query and input into lists for visual representation
@@ -222,8 +212,6 @@ public class SearchFragment extends Fragment {
         MealDetailFragment newFragment = new MealDetailFragment();
         Bundle b = new Bundle();
         b.putString("bookmarkURL", bookmarkURL);
-//        b.putString("picURL", picURL);
-//        b.putString("recipeURL", "https://en.wikipedia.org/wiki/Pok%C3%A9mon:_Detective_Pikachu");
         newFragment.setArguments(b);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(getId(), newFragment);

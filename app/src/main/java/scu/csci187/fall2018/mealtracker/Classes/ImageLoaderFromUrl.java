@@ -8,9 +8,6 @@ import android.widget.ImageView;
 
 import java.io.InputStream;
 
-/*
-    TODO: resize bitmap for faster processing
- */
 public class ImageLoaderFromUrl extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
 

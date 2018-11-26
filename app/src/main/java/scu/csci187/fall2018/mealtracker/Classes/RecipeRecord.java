@@ -38,14 +38,6 @@ public class RecipeRecord {
         this.bookmarkURL = bookmarkURL;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setTime(int time) {
         this.time = time;
     }

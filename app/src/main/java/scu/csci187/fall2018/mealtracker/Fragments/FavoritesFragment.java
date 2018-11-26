@@ -17,14 +17,19 @@ import java.util.List;
 
 import scu.csci187.fall2018.mealtracker.Classes.APIHandler;
 import scu.csci187.fall2018.mealtracker.Classes.FavoritesRecyclerViewAdapter;
+import scu.csci187.fall2018.mealtracker.Classes.Recipe;
 import scu.csci187.fall2018.mealtracker.Classes.RecipeRecord;
 import scu.csci187.fall2018.mealtracker.R;
 
 
 public class FavoritesFragment extends Fragment {
     private RecyclerView rvFavorites;
-    private List<String> meals, pics;
+    private List<String> meals;
+    private List<String> pics;
+    private ArrayList<String> bookmarkURLs;
     private List<RecipeRecord> recipeRecords = new ArrayList<>();
+    private List<Recipe> recipes;
+
 
     public FavoritesFragment() {
         // Required empty public constructor
@@ -57,35 +62,33 @@ public class FavoritesFragment extends Fragment {
             TODO: DB call to get list of Favorited Meals (primaryKey is bookmarkURL)
          */
         // DB Calls to build List<string> meals/pics for search
-        //recipeRecords = this.getRecipeRecordsFromDB();
+        recipeRecords = /* TODO GET FROM DB */ new ArrayList<>();
 
-//        for (RecipeRecord rr : recipeRecords) {
-//            meals.add(rr.getName());
-//            pics.add(rr.getPicURL());
-//        }
+        // TODO REMOVE HARDCODED VALUES WHEN WE HAVE DB
+        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
+                "11/26/2018", 0));
+        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
+                "11/24/2018", 1));
+        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98",
+                "11/26/2018", 1));
+        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98",
+                "11/24/2018", 0));
+
+        recipes = new ArrayList<>();
+        bookmarkURLs = new ArrayList<>();
+        for (RecipeRecord rr : recipeRecords) {
+            bookmarkURLs.add(rr.getBookmarkURL());
+        }
+
+        recipes = new APIHandler().getRecipesFromBookmarks(bookmarkURLs);
+
+
+        for (Recipe r: recipes) {
+            meals.add(r.name());
+            pics.add(r.imageUrl());
+        }
 
     }
-
- /*   public ArrayList<RecipeRecord> getRecipeRecordsFromDB() {
-
-        // TODO HARDCODED. CHANGE TO GET DATA FROM DB.
-        ArrayList<String> r1l = new ArrayList<>();
-        ArrayList<String> r2l = new ArrayList<>();
-        r1l.add("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f");
-        r2l.add("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98");
-
-        RecipeRecord r1 = new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f", "food1", "12/4/2018",
-                        new APIHandler().getRecipesFromBookmarks(r1l).get(0).imageUrl());
-        RecipeRecord r2 = new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98", "food1", "12/25/2018",
-                        new APIHandler().getRecipesFromBookmarks(r2l).get(0).imageUrl());
-        ArrayList<RecipeRecord> rr = new ArrayList<>();
-        rr.add(r1);
-        rr.add(r2);
-
-        return rr;
-        return r1l;
-    }
-   */
 
     public void createAndAttachRVAdapter() {
         ArrayList<String> bookmarkURL = new ArrayList<>();
@@ -94,7 +97,7 @@ public class FavoritesFragment extends Fragment {
         }
 
         FavoritesRecyclerViewAdapter favoritesAdapter = new FavoritesRecyclerViewAdapter(getContext(),
-                meals, pics, bookmarkURL, this);
+                meals, pics, bookmarkURLs, this);
         rvFavorites.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvFavorites.setAdapter(favoritesAdapter);
     }

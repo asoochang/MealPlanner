@@ -98,8 +98,8 @@ public class ShoppingListFragment extends Fragment implements
                                 removeCheckboxes(indexToRemove);
 //                                mealData.remove(indexToRemove);
                                 final SQLiteMeal passedMeal = meal;
+                                new SQLiteDBManager(getContext()).clearDatabase(mealData);
                                 removeDataAndRefresh(passedMeal);
-                                new SQLiteDBManager(getContext()).clearDatabase(passedMeal.getMealName());
                             }
                         }
                     });
@@ -117,6 +117,7 @@ public class ShoppingListFragment extends Fragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        getShoppingListFromLocalStorage();
         if (context instanceof ShoppingListFragment.RefreshShoppingList) {
             mCallback = (ShoppingListFragment.RefreshShoppingList) context;
         } else {
@@ -157,6 +158,8 @@ public class ShoppingListFragment extends Fragment implements
             int id = cb.getId();
             listContainer.removeView(listContainer.findViewById(id));
         }
+
+         cbData.remove(boxes);
     }
 
     private void removeMeal(int index) {

@@ -3,6 +3,7 @@ package scu.csci187.fall2018.mealtracker.Classes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -66,10 +67,9 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
 
     public void writeToDB(ArrayList<SQLiteMeal> meals){
 
-        for (SQLiteMeal slm: meals) {
 
-        }
         SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
         String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text)";
         db.execSQL(sql);
         for(int i = 0; i < meals.size(); i++) {
@@ -89,15 +89,25 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
                 db.insert(currentMeal, null, cv2);
             }
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
-    public void clearDatabase(String mealName) {
+    public void clearDatabase(ArrayList<SQLiteMeal> meals) {
         SQLiteDatabase db = getWritableDatabase();
-        String sql;
-        sql = "drop table if exists " + mealName;
-        db.execSQL(sql);
-        sql = "delete from shoppingList where meal="+"\""+mealName+"\"";
-        db.execSQL(sql);
+        db.beginTransaction();
+
+        for (SQLiteMeal meal: meals){
+            String mealName = meal.getMealName();
+            String sql;
+            sql = "drop table if exists " + mealName;
+            db.execSQL(sql);
+            sql = "delete from shoppingList where meal="+"\""+mealName+"\"";
+            db.execSQL(sql);
+        }
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     public ArrayList<SQLiteMeal> getMeals(){
@@ -112,22 +122,36 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.moveToFirst();
             ArrayList<SQLiteIngredient> ingredients;
-            while (cursor.moveToNext()) {
+            for(boolean cBoundsCheck = true; cBoundsCheck ;cBoundsCheck = cursor.moveToNext()) {
                 ingredients = new ArrayList<>();
-                String currentMeal = cursor.getString(cursor.getColumnIndexOrThrow("meal"));
-                Cursor Icursor = getReadableDatabase().rawQuery("SELECT * FROM " + currentMeal, null);
+                Cursor Icursor;
+                String currentMeal;
+                try {
+                    currentMeal = cursor.getString(cursor.getColumnIndexOrThrow("meal"));
+                    Icursor = getReadableDatabase().rawQuery("SELECT * FROM " + currentMeal, null);
+                } catch (CursorIndexOutOfBoundsException e) {
+                    e.getStackTrace();
+                    Icursor = null;
+                    currentMeal = null;
+                }
                 if(Icursor != null) {
                     Icursor.moveToFirst();
-                    while(Icursor.moveToNext()) {
-                        String ingredientName = Icursor.getString(Icursor.getColumnIndexOrThrow("ingredient"));
-                        boolean isChecked = (Icursor.getInt(Icursor.getColumnIndexOrThrow("checkmark")) != 0);
-                        SQLiteIngredient ingredient = new SQLiteIngredient(ingredientName, isChecked);
-                        ingredients.add(ingredient);
+                    for(boolean iCBoundsCheck = true; iCBoundsCheck ;iCBoundsCheck = Icursor.moveToNext()) {
+                        try {
+                            String ingredientName = Icursor.getString(Icursor.getColumnIndexOrThrow("ingredient"));
+                            boolean isChecked = (Icursor.getInt(Icursor.getColumnIndexOrThrow("checkmark")) != 0);
+                            SQLiteIngredient ingredient = new SQLiteIngredient(ingredientName, isChecked);
+                            ingredients.add(ingredient);
+                        } catch (CursorIndexOutOfBoundsException e) {
+                            e.getStackTrace();
+                        }
                     }
                 }
-                SQLiteMeal meal = new SQLiteMeal(currentMeal, ingredients);
-                meals.add(meal);
-                Icursor.close();
+                if (currentMeal != null) {
+                    SQLiteMeal meal = new SQLiteMeal(currentMeal, ingredients);
+                    meals.add(meal);
+                    Icursor.close();
+                }
             }
         }
         if (cursor != null){

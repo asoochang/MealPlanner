@@ -75,7 +75,7 @@ public class ShoppingListFragment extends Fragment implements
                 TextView name = new TextView(getContext());
                 name.setId(mealNameTvIdCounter++);
                 name.setTextSize(15);
-                name.setText(meal.getMealName());
+                name.setText(fMealName);
                 container.addView(name);
                 mealIds.add(name.getId());
 

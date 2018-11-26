@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Filter;
 
 import scu.csci187.fall2018.mealtracker.Classes.APIHandler;
@@ -267,6 +269,10 @@ public class MainActivity extends AppCompatActivity
             Ingredient currentIngredient = ingredients.getIngredientAtIndex(i);
             ingredientsAsStrings.add(currentIngredient.food());
         }
+        Set<String> ingredientSet = new HashSet<>();
+        ingredientSet.addAll(ingredientsAsStrings);
+        ingredientsAsStrings.clear();
+        ingredientsAsStrings.addAll(ingredientSet);
 
         // build ShoppingListItem into SQLiteMeal to add to DB
         ArrayList<SQLiteIngredient> ingredientsList = new ArrayList<>();

@@ -3,6 +3,7 @@ package scu.csci187.fall2018.mealtracker.Classes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -10,7 +11,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class SQLiteDBManager extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "shoppingList";
+    private static final String DATABASE_NAME = "shoppingListDB";
     private static final int DATABASE_VERSION = 1;
 
     public SQLiteDBManager(Context context) {
@@ -34,9 +35,11 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("meal", meal.getMealName());
         SQLiteDatabase db = getWritableDatabase();
-        db.insert("shoppingList", null, cv);
+        db.insert("shoppingList",null,  cv);
 
-        String sql = "CREATE TABLE IF NOT EXISTS " + meal.getMealName() + "(ingredient text primary key, checkmark integer)";
+        String dropCurrentTable = "DROP TABLE " + meal.getMealName();
+        db.execSQL(dropCurrentTable);
+        String sql = "CREATE TABLE IF NOT EXISTS " + meal.getMealName() + "(ingredient text PRIMARY KEY, checkmark integer)";
         db.execSQL(sql);
 
         ArrayList<SQLiteIngredient> ingredients = meal.getIngredients();
@@ -48,7 +51,11 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
             Log.d("DBMANAGER", ingredients.get(i).getIngredient());
             cv1.put("ingredient", ingredients.get(i).getIngredient());
             cv1.put("checkmark", 0);
-            db.insert(meal.getMealName(), null, cv1);
+            try {
+                db.insert(meal.getMealName(), null, cv1);
+            } catch (SQLiteConstraintException e) {
+                Log.d("ERROR AT ADD ENTRY", e.toString());
+            }
         }
     }
 

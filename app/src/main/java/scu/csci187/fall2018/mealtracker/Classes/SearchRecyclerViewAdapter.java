@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import scu.csci187.fall2018.mealtracker.Activities.MainActivity;
 import scu.csci187.fall2018.mealtracker.Fragments.SearchFragment;
 import scu.csci187.fall2018.mealtracker.R;
 
@@ -28,6 +29,9 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
     SearchFragment sourceFragment;
     Context mContext;
 
+    SearchShoppingListener mShoppingCallback;
+    SearchFavoriteListener mFavoritesCallback;
+
     public SearchRecyclerViewAdapter(Context context, List<String> meals, List<String> picUrls, List<String> bookmarkURLs,
                                                         SearchFragment sourceFragment) {
         this.meals = meals;
@@ -35,6 +39,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         this.mContext = context;
         this.sourceFragment = sourceFragment;
         this.bookmarkURLs = bookmarkURLs;
+        //this.mShoppingCallback = ;
     }
 
     @Override
@@ -64,9 +69,11 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             @Override
             public void onClick(View v) {
                 final int position = vHolder.getAdapterPosition();
-                /*
-                        TODO: callback to Main Activity to update shopping list
-                */
+                String mealBookmark = bookmarkURLs.get(position);
+
+                sourceFragment.sendMealToShoppingList(mealBookmark, meals.get(position));
+
+
                 vHolder.tvAddShopping.setText("                          ");
                 vHolder.addToShoppingList.setImageResource(R.drawable.ic_done);
 
@@ -119,6 +126,8 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             tvAddFavorite = itemView.findViewById(R.id.addFavoriteText);
 
             itemView.setOnClickListener(this);
+
+
         }
 
         @Override
@@ -131,5 +140,13 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onClick(View view, int position);
+    }
+
+    public interface SearchShoppingListener {
+        //void searchAddToShoppingList(String bookmarkURL, String mealName);
+    }
+
+    public interface SearchFavoriteListener {
+        void searchAddToFavoritesList();
     }
 }

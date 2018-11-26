@@ -7,11 +7,11 @@ public class SQLiteMeal {
     private ArrayList<SQLiteIngredient> ingredientsList;
 
     public SQLiteMeal(String meal, ArrayList<SQLiteIngredient> ingredients) {
-        this.meal = meal;
+        this.meal = meal.replaceAll(" ", "_");
         this.ingredientsList = ingredients;
     }
 
-    public String getMeal() { return meal; }
+    public String getMealName() { return meal; }
     public ArrayList<SQLiteIngredient> getIngredients(){
         return ingredientsList;
     }

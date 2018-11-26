@@ -36,7 +36,7 @@ import scu.csci187.fall2018.mealtracker.Classes.UserPreferences;
 import scu.csci187.fall2018.mealtracker.R;
 
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment  {
 
     private RecyclerView rvSearch;
     private EditText searchText;
@@ -219,7 +219,16 @@ public class SearchFragment extends Fragment {
         transaction.commit();
     }
 
+    public void sendMealToShoppingList(String bookmarkURL, String mealName) {
+        mCallback.addToShoppingList(bookmarkURL, mealName);
+    }
+
     public interface SearchFragmentListener {
         void goToFilters(String inputString);
+        void addToShoppingList(String bookmarkURL, String mealName);
+    }
+
+    public interface SearchToFavoritesListener {
+        void addMealFromSearchToFavorites(String bookmarkURL, String mealName);
     }
 }

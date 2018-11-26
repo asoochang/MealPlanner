@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class DBQueries {
-
+/*
     public int userID;
 
     public DBQueries(int userID) {
@@ -181,4 +181,5 @@ public class DBQueries {
             }
         }
     }
+    */
 }

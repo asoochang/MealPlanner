@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,8 +20,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.logging.Filter;
 
+import scu.csci187.fall2018.mealtracker.Classes.APIHandler;
+import scu.csci187.fall2018.mealtracker.Classes.Ingredient;
+import scu.csci187.fall2018.mealtracker.Classes.Ingredients;
+import scu.csci187.fall2018.mealtracker.Classes.Recipe;
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteDBManager;
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteIngredient;
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteMeal;
 import scu.csci187.fall2018.mealtracker.Classes.UserPreferences;
 import scu.csci187.fall2018.mealtracker.Fragments.FiltersFragment;
 import scu.csci187.fall2018.mealtracker.Fragments.HomeFragment;
@@ -35,7 +44,8 @@ public class MainActivity extends AppCompatActivity
         implements SearchFragment.SearchFragmentListener,
         FiltersFragment.FiltersFragmentListener,
         MealDetailFragment.MadeMealListener,
-        MealDetailFragment.ScheduleMealListener {
+        MealDetailFragment.ScheduleMealListener,
+        ShoppingListFragment.RefreshShoppingList {
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -77,8 +87,7 @@ public class MainActivity extends AppCompatActivity
             CURRENT_TAG = TAG_HOME;
             Fragment fragment = getHomeFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                    android.R.anim.fade_out);
+            //fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
             fragmentTransaction.add(R.id.frame, fragment, CURRENT_TAG);
             fragmentTransaction.commit();
         }
@@ -149,8 +158,7 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = getHomeFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                android.R.anim.fade_out);
+        //fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -216,8 +224,7 @@ public class MainActivity extends AppCompatActivity
             CURRENT_TAG = TAG_SEARCH;
             Fragment frag = (SearchFragment) getSupportFragmentManager().findFragmentByTag(TAG_SEARCH);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                    android.R.anim.fade_out);
+            //fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,  android.R.anim.fade_out);
             fragmentTransaction.replace(R.id.frame, frag, TAG_SEARCH);
             fragmentTransaction.commit();
         }
@@ -233,7 +240,46 @@ public class MainActivity extends AppCompatActivity
         searchText = inputString;   // save search string if user inputted one before going to filters
         mFiltersFragment = new FiltersFragment();
         navToFragment(mFiltersFragment, TAG_FILTERS);
+    }
 
+    public void addToShoppingList(String bookmarkURL, String mealName) {
+        /*
+        // call shoppinglist fragment add to list
+        ShoppingListFragment slFrag = (ShoppingListFragment) getSupportFragmentManager().findFragmentByTag(TAG_SHOPPING);
+        if(slFrag == null) {
+            slFrag = new ShoppingListFragment();
+            navToFragment(slFrag, TAG_SHOPPING);
+            slFrag.addDataAndRefresh(bookmarkURL, mealName);
+        }
+        else {
+            navToFragment(slFrag, TAG_SHOPPING);
+            slFrag.addDataAndRefresh(bookmarkURL, mealName);
+        }
+        */
+        // get ingredients list using bookmarkURL
+        ArrayList<String> ingredientsAsStrings = new ArrayList<>();
+        ArrayList<String> bookmarks = new ArrayList<>();
+        bookmarks.add(bookmarkURL);
+
+        ArrayList<Recipe> recipes = new APIHandler().getRecipesFromBookmarks(bookmarks);
+        Ingredients ingredients = recipes.get(0).ingredients();
+        for (int i = 0; i < ingredients.length(); ++i) {
+            Ingredient currentIngredient = ingredients.getIngredientAtIndex(i);
+            ingredientsAsStrings.add(currentIngredient.food());
+        }
+
+        // build ShoppingListItem into SQLiteMeal to add to DB
+        ArrayList<SQLiteIngredient> ingredientsList = new ArrayList<>();
+
+        for(int x = 0; x < ingredientsAsStrings.size(); x++) {
+            ingredientsList.add(new SQLiteIngredient(ingredientsAsStrings.get(x), false));
+        }
+        SQLiteMeal thisMeal = new SQLiteMeal(mealName, ingredientsList);
+        Log.d("MAINSHOPPING", thisMeal.getMealName() + " " + thisMeal.getIngredients().get(0).getIngredient());
+
+        SQLiteDBManager dbManager = new SQLiteDBManager(this);
+        dbManager.addEntry(thisMeal);
+        dbManager.close();
     }
 
     // Implement listener for Filters Fragment
@@ -263,19 +309,25 @@ public class MainActivity extends AppCompatActivity
         navToFragment(homeFrag, TAG_HOME);
     }
 
+    // Implementation of RefreshShoppingList interface
+    public void refreshShoppingListFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment slFragment = fm.findFragmentByTag("TAG_SHOPPING");
+        if(slFragment == null)
+            slFragment = new ShoppingListFragment();
+        fm.beginTransaction().detach(slFragment).attach(slFragment).commit();
+        CURRENT_TAG = TAG_SHOPPING;
+    }
+
     public void navToFragment(Fragment fragment, String tag) {
         CURRENT_TAG = tag;
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                android.R.anim.fade_out);
+        //fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         fragmentTransaction.replace(R.id.frame, fragment, tag);
         if(!tag.equals(TAG_FILTERS)) {
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();
     }
-
-
-
 }

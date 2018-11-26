@@ -129,9 +129,6 @@ public class HomeFragment extends Fragment  {
         // Note: The compareTo is untested and might be backwards
         // TODO when we have data check that this works
         for (RecipeRecord rr : recipeRecords) {
-            System.out.println("    1 Date Values. new first and then mine");
-            System.out.println(new Date().toString());
-            System.out.println(rr.getDate().toString());
             if (rr.getDate().compareTo(new Date()) >= 0) {
 
                 upcomingMeals.add(rr.getName());
@@ -141,9 +138,6 @@ public class HomeFragment extends Fragment  {
             }
         }
         for (RecipeRecord rr : recipeRecords) {
-            System.out.println("    2 Date Values. new first and then mine");
-            System.out.println(new Date().toString());
-            System.out.println(rr.getDate().toString());
             if (rr.getDate().compareTo(new Date()) < 0) {
                 historyMeals.add(rr.getName());
                 historyDates.add(rr.getDateString());

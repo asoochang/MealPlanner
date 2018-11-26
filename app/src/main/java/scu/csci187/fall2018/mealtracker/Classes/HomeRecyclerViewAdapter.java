@@ -24,18 +24,20 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
     private List<String> dates;
     private List<String> picUrls;
     private List<String> bookmarkURL;
+    private List<Integer> blds;
     HomeFragment sourceFragment;
     private ItemClickListener clickListener;
     Context mContext;
 
     public HomeRecyclerViewAdapter(Context context, List<String> meals, List<String> dates,
-                                   List<String> picUrls, List<String> bookmarkURL, HomeFragment sourceFragment) {
+                                   List<String> picUrls, List<String> bookmarkURL, List<Integer> blds, HomeFragment sourceFragment) {
         this.meals = meals;
         this.dates = dates;
         this.picUrls = picUrls;
         this.sourceFragment = sourceFragment;
         this.mContext = context;
         this.bookmarkURL = bookmarkURL;
+        this.blds = blds;
     }
 
     @Override

@@ -42,6 +42,7 @@ public class HomeFragment extends Fragment  {
     private List<String> upcomingMeals, upcomingDates, upcomingPics, upcomingBookmarks,
             historyMeals, historyDates, historyPics, historyBookmarks;
 
+    private List<Integer> upcomingBlds, historyBlds;
     private UpcomingRecyclerViewAdapter upcomingAdapter;
     private HomeRecyclerViewAdapter historyAdapter;
 
@@ -84,14 +85,16 @@ public class HomeFragment extends Fragment  {
          */
 
         // Meals should be given DB values (bookmark links)
+
+        ArrayList<RecipeRecord> recipeRecords = /*TODO change to DB call ->*/ new ArrayList<>();
         ArrayList<String> bookmarkedMeals = new ArrayList<>();
         ArrayList<Recipe> recipes = new ArrayList<>();
 
-        bookmarkedMeals.add("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f");
-        bookmarkedMeals.add("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98");
+//        bookmarkedMeals.add("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f");
+//        bookmarkedMeals.add("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98");
 
 
-        recipes = new APIHandler().getRecipesFromBookmarks(bookmarkedMeals);
+
 
         // Initialize lists that correspond to UI elements (Parallel)
 
@@ -99,55 +102,53 @@ public class HomeFragment extends Fragment  {
         upcomingMeals = new ArrayList<>();
         upcomingDates = new ArrayList<>();
         upcomingPics = new ArrayList<>();
+        upcomingBlds = new ArrayList<>();
         upcomingBookmarks = new ArrayList<>();
 
         // Parallel set -> (History)
         historyMeals = new ArrayList<>();
         historyDates = new ArrayList<>();
         historyPics = new ArrayList<>();
+        historyBlds = new ArrayList<>();
         historyBookmarks = new ArrayList<>();
-
-
-        ArrayList<RecipeRecord> recipeRecords = new ArrayList<>();
-
-        // TODO fix DB call (hardcoded date) when we get the SQL Query functions.
-        // Currently this line is incomplete because r.getDataFromDBAsString()
-        // is a placeholder and not functional.
-        for (Recipe r : recipes) {
-            recipeRecords.add(new RecipeRecord(r.linkInAPI(), r.name(),"12/1/2018", r.imageUrl()));
-        }
 
 
         // Sort the recipe records to make it easier to input them in order
         // into their respective ArrayLists.
         Collections.sort(recipeRecords, new RecipeRecordComparator());
 
+        // TODO fix DB call (hardcoded date) when we get the SQL Query functions.
+        // Currently this line is incomplete because r.getDataFromDBAsString()
+        // is a placeholder and not functional.
+//        for (Recipe r : recipes) {
+//            recipeRecords.add(new RecipeRecord(r.linkInAPI(), r.name(),"12/1/2018", r.imageUrl()));
+//        }
+
+        for (RecipeRecord rr: recipeRecords) {
+            bookmarkedMeals.add(rr.getBookmarkURL());
+        }
+
+        recipes = new APIHandler().getRecipesFromBookmarks(bookmarkedMeals);
 
         // Separating the recipe records into parallel ArrayLists is
         // important because the UI is currently built this way.
         // Note: The compareTo is untested and might be backwards
         // TODO when we have data check that this works
-        for (RecipeRecord rr : recipeRecords) {
-            System.out.println("    1 Date Values. new first and then mine");
-            System.out.println(new Date().toString());
-            System.out.println(rr.getDate().toString());
-            if (rr.getDate().compareTo(new Date()) >= 0) {
-
-                upcomingMeals.add(rr.getName());
-                upcomingDates.add(rr.getDateString());
-                upcomingPics.add(rr.getPicURL());
-                upcomingBookmarks.add(rr.getBookmarkURL());
-            }
-        }
-        for (RecipeRecord rr : recipeRecords) {
-            System.out.println("    2 Date Values. new first and then mine");
-            System.out.println(new Date().toString());
-            System.out.println(rr.getDate().toString());
-            if (rr.getDate().compareTo(new Date()) < 0) {
-                historyMeals.add(rr.getName());
-                historyDates.add(rr.getDateString());
-                historyPics.add(rr.getPicURL());
-                upcomingBookmarks.add(rr.getBookmarkURL());
+        for (int i = 0; i < recipes.size(); ++i) {
+            Recipe currentRecipe = recipes.get(i);
+            // Getting new date every iteration because of edge case where loop is running
+            // at the moment it changes from 11:59 PM to 12:00 AM
+            if (recipeRecords.get(i).getDate().compareTo(new Date()) >= 0) {
+                upcomingMeals.add(currentRecipe.name());
+                upcomingDates.add(recipeRecords.get(i).getDateString());
+                upcomingPics.add(currentRecipe.imageUrl());
+                upcomingBlds.add(recipeRecords.get(i).getTime());
+                upcomingBookmarks.add(currentRecipe.linkInAPI());
+            } else {
+                historyMeals.add(currentRecipe.name());
+                historyDates.add(recipeRecords.get(i).getDateString());
+                historyPics.add(currentRecipe.imageUrl());
+                historyBookmarks.add(currentRecipe.linkInAPI());
             }
         }
 
@@ -157,13 +158,13 @@ public class HomeFragment extends Fragment  {
 
     public void createAndAttachRVAdapters() {
         upcomingAdapter = new UpcomingRecyclerViewAdapter(getContext(),
-                                    upcomingMeals, upcomingDates, upcomingPics, upcomingBookmarks, this);
+                                    upcomingMeals, upcomingDates, upcomingPics, upcomingBookmarks, upcomingBlds, this);
         rvUpcoming.setLayoutManager(new LinearLayoutManager(getActivity(),
                                  LinearLayoutManager.HORIZONTAL, false));
         rvUpcoming.setAdapter(upcomingAdapter);
 
         historyAdapter = new HomeRecyclerViewAdapter(getContext(),
-                                    historyMeals, historyDates, historyPics, historyBookmarks, this);
+                                    historyMeals, historyDates, historyPics, historyBookmarks, historyBlds, this);
         rvHistory.setLayoutManager(new LinearLayoutManager(getActivity(),
                                         LinearLayout.HORIZONTAL, false));
         rvHistory.setAdapter(historyAdapter);
@@ -213,7 +214,7 @@ public class HomeFragment extends Fragment  {
         Toast.makeText(getContext(), "size meals " + upcomingMeals.size(), Toast.LENGTH_SHORT).show();
 
         // Remove item from Upcoming List view
-        upcomingAdapter = new UpcomingRecyclerViewAdapter(getContext(), upcomingMeals, upcomingDates, upcomingPics, upcomingBookmarks, this);
+        upcomingAdapter = new UpcomingRecyclerViewAdapter(getContext(), upcomingMeals, upcomingDates, upcomingPics, upcomingBookmarks, upcomingBlds, this);
         rvUpcoming.setAdapter(upcomingAdapter);
         //rvUpcoming.removeViewAt(index);
         //upcomingAdapter.notifyItemRemoved(index);
@@ -228,7 +229,7 @@ public class HomeFragment extends Fragment  {
         historyDates.add(0, date);
         historyPics.add(0, pic);
         historyAdapter = new HomeRecyclerViewAdapter(getContext(),
-                historyMeals, historyDates, historyPics, historyBookmarks, this);
+                historyMeals, historyDates, historyPics, historyBookmarks, historyBlds, this);
         rvHistory.setAdapter(historyAdapter);
         //
 

@@ -2,7 +2,7 @@ package scu.csci187.fall2018.mealtracker.Classes;
 
 public class SQLiteIngredient {
     public String ingredient;
-    public Boolean isChecked;
+    public boolean isChecked;
 
     public SQLiteIngredient() {
         this.ingredient = "";
@@ -10,7 +10,7 @@ public class SQLiteIngredient {
     }
 
     public SQLiteIngredient(String ingredient, Boolean isChecked){
-        this.ingredient = ingredient;
+        this.ingredient = ingredient.replaceAll(" ", "_");
         this.isChecked = isChecked;
     }
 
@@ -18,7 +18,7 @@ public class SQLiteIngredient {
         return ingredient;
     }
 
-    public Boolean getisChecked(){
+    public boolean getisChecked(){
         return isChecked;
     }
 }

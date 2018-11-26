@@ -57,7 +57,7 @@ public class Row {
             int NumOfCol = rsmd.getColumnCount();
             while (rs.next()) {
                 Row current_row = new Row();
-                for (int i = 1; i <= NumOfCol; i++) {
+                for (int i = 0; i <= NumOfCol; i++) {
                     current_row.add(rs.getObject(i), rsmd.getColumnTypeName(i));
                 }
                 table.add(current_row);

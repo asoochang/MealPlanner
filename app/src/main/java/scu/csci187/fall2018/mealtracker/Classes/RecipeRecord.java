@@ -7,25 +7,26 @@ public class RecipeRecord {
     private String bookmarkURL;
     private String name;
     private String dateString;
-    private String picURL;
+    private int time;
     private Date date;
 
     private void getDateFromString(String input) {
         String[] splitInput = input.split("/");
 
         int monthIndex = 0, dayIndex = 1, yearIndex = 2;
-        int month = Integer.parseInt(splitInput[monthIndex]);
+        // Subtract 1 because month is indexed starting at 0 for Jan
+        // And values inputted are in standard human month numbering
+        int month = Integer.parseInt(splitInput[monthIndex]) - 1;
         int day = Integer.parseInt(splitInput[dayIndex]);
         int year = Integer.parseInt(splitInput[yearIndex]);
 
         this.date = new GregorianCalendar(year, month, day).getTime();
     }
 
-    public RecipeRecord (String bookmarkURL, String name, String dateString, String picURL) {
+    public RecipeRecord (String bookmarkURL, String dateString, int time) {
         this.bookmarkURL = bookmarkURL;
-        this.name = name;
         this.dateString = dateString;
-        this.picURL = picURL;
+        this.time = time;
         this.getDateFromString(this.dateString);
     }
 
@@ -45,6 +46,10 @@ public class RecipeRecord {
         this.name = name;
     }
 
+    public void setTime(int time) {
+        this.time = time;
+    }
+
     public String getDateString() {
         return dateString;
     }
@@ -55,16 +60,11 @@ public class RecipeRecord {
         this.getDateFromString(this.dateString);
     }
 
-    public String getPicURL() {
-        return picURL;
-    }
-
-    public void setPicURL(String picURL) {
-        this.picURL = picURL;
-    }
-
     public Date getDate() {
         return this.date;
     }
 
+    public int getTime() {
+        return time;
+    }
 }

@@ -83,6 +83,8 @@ public class HomeFragment extends Fragment  {
             TODO:
             Call the DB accession file;
             Return list here as meals;
+
+            Data currently hardcoded
          */
 
         // Meals should be given DB values (bookmark links)
@@ -93,15 +95,12 @@ public class HomeFragment extends Fragment  {
 
         recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
                                                 "11/26/2018", 0));
+        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
+                "11/24/2018", 1));
         recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98",
                                                 "11/26/2018", 1));
         recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98",
                 "11/24/2018", 0));
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
-                "11/24/2018", 1));
-//        bookmarkedMeals.add("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f");
-//        bookmarkedMeals.add("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98");
-
 
 
 
@@ -147,9 +146,6 @@ public class HomeFragment extends Fragment  {
             Recipe currentRecipe = recipes.get(i);
             // Getting new date every iteration because of edge case where loop is running
             // at the moment it changes from 11:59 PM to 12:00 AM
-
-            System.out.println("DATES::::" + recipeRecords.get(i).getDate() +" | "+ new Date());
-
             if (recipeRecords.get(i).getDate().compareTo(new Date()) >= 0) {
                 upcomingMeals.add(currentRecipe.name());
                 upcomingDates.add(recipeRecords.get(i).getDateString());

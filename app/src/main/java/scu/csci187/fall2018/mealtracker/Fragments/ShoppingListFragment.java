@@ -1,6 +1,7 @@
 package scu.csci187.fall2018.mealtracker.Fragments;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,6 @@ public class ShoppingListFragment extends Fragment implements
                         SearchRecyclerViewAdapter.SearchShoppingListener {
 
     private ArrayList<Integer> mealIds;
-
     private ArrayList<SQLiteMeal> mealData;
     private ArrayList<ArrayList<CheckBox>> cbData;
     private int mealNameTvIdCounter = 678;  // set to # higher than expected # of checkboxes to avoid ID overlap
@@ -49,6 +49,8 @@ public class ShoppingListFragment extends Fragment implements
         if (getArguments() != null) {
 
         }
+        SQLiteDBManager dbmanager = new SQLiteDBManager(getContext());
+        dbmanager.initShoppingList();
     }
 
     @Override
@@ -68,7 +70,7 @@ public class ShoppingListFragment extends Fragment implements
 
         //Load shopping list into UI
         if(mealData.size() > 0) {
-            for(SQLiteMeal meal : mealData) {
+            for(final SQLiteMeal meal : mealData) {
                 final String fMealName = meal.getMealName();
                 ArrayList<CheckBox> boxes = new ArrayList<>();
 
@@ -91,10 +93,13 @@ public class ShoppingListFragment extends Fragment implements
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             int indexToRemove = getIndexOfFullyCheckedMeal();
                             if(getIndexOfFullyCheckedMeal() != -1) {
+
                                 showRemovalToast(fMealName);
                                 removeCheckboxes(indexToRemove);
-                                removeMeal(indexToRemove);
-                                removeDataAndRefresh(indexToRemove);
+//                                mealData.remove(indexToRemove);
+                                final SQLiteMeal passedMeal = meal;
+                                removeDataAndRefresh(passedMeal);
+                                new SQLiteDBManager(getContext()).clearDatabase(passedMeal.getMealName());
                             }
                         }
                     });
@@ -134,6 +139,7 @@ public class ShoppingListFragment extends Fragment implements
     }
 
     private boolean allIngredientsMarked(ArrayList<CheckBox> cbList) {
+
         for(int x = 0; x < cbList.size(); x++) {
             CheckBox cb = cbList.get(x);
             if(cb == null)
@@ -157,8 +163,8 @@ public class ShoppingListFragment extends Fragment implements
         listContainer.removeView(listContainer.findViewById(mealIds.get(index)));
     }
 
-    private void removeDataAndRefresh(int index) {
-        mealData.remove(index);
+    private void removeDataAndRefresh(SQLiteMeal meal) {
+        mealData.remove(meal);
         writeShoppingListToDisk(mealData);
         mCallback.refreshShoppingListFragment();
     }

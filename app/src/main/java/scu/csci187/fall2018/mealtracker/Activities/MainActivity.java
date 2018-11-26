@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity
     // Implementation of RefreshShoppingList interface
     public void refreshShoppingListFragment() {
         FragmentManager fm = getSupportFragmentManager();
-        Fragment slFragment = fm.findFragmentByTag("TAG_SHOPPING");
+        Fragment slFragment = fm.findFragmentByTag(TAG_SHOPPING);
         if(slFragment == null)
             slFragment = new ShoppingListFragment();
         fm.beginTransaction().detach(slFragment).attach(slFragment).commit();

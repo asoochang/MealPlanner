@@ -26,18 +26,23 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int v1, int v2) {
-        String sql = "DROP TABLE IF EXISTS shoppingList";
-        db.execSQL(sql);
         onCreate(db);
     }
 
+    public void initShoppingList() {
+        SQLiteDatabase db = getWritableDatabase();
+        String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text)";
+        db.execSQL(sql);
+    }
     public void addEntry(SQLiteMeal meal) {
         ContentValues cv = new ContentValues();
         cv.put("meal", meal.getMealName());
         SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
         db.insert("shoppingList",null,  cv);
 
-        String dropCurrentTable = "DROP TABLE " + meal.getMealName();
+
+        String dropCurrentTable = "DROP TABLE IF EXISTS " + meal.getMealName();
         db.execSQL(dropCurrentTable);
         String sql = "CREATE TABLE IF NOT EXISTS " + meal.getMealName() + "(ingredient text PRIMARY KEY, checkmark integer)";
         db.execSQL(sql);
@@ -51,16 +56,19 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
             Log.d("DBMANAGER", ingredients.get(i).getIngredient());
             cv1.put("ingredient", ingredients.get(i).getIngredient());
             cv1.put("checkmark", 0);
-            try {
-                db.insert(meal.getMealName(), null, cv1);
-            } catch (SQLiteConstraintException e) {
-                Log.d("ERROR AT ADD ENTRY", e.toString());
-            }
+
+            db.insert(meal.getMealName(),null, cv1);
+
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     public void writeToDB(ArrayList<SQLiteMeal> meals){
-        clearDatabase(meals);
+
+        for (SQLiteMeal slm: meals) {
+
+        }
         SQLiteDatabase db = getWritableDatabase();
         String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text)";
         db.execSQL(sql);
@@ -71,7 +79,7 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put("meal", currentMeal);
             db.insert("shoppingList", null, cv);
-            sql = "CREATE TABLE IF NOT EXISTS " + currentMeal + "(ingredient text primary key, checkmark integer)";
+            sql = "CREATE TABLE IF NOT EXISTS " + currentMeal + "(ingredient text PRIMARY KEY, checkmark integer)";
             db.execSQL(sql);
             for(int j = 0; j < currentIngredients.size(); j++) {
                 Log.d("sqldbman", currentIngredients.get(j).getIngredient());
@@ -83,20 +91,23 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
         }
     }
 
-    private void clearDatabase(ArrayList<SQLiteMeal> meals) {
+    public void clearDatabase(String mealName) {
         SQLiteDatabase db = getWritableDatabase();
         String sql;
-        for(int i = 0; i < meals.size(); i++) {
-            String currentMeal = meals.get(i).getMealName();
-            sql = "drop table if exists " + currentMeal;
-            db.execSQL(sql);
-        }
-        sql = "drop table shoppingList";
+        sql = "drop table if exists " + mealName;
+        db.execSQL(sql);
+        sql = "delete from shoppingList where meal="+"\""+mealName+"\"";
         db.execSQL(sql);
     }
 
     public ArrayList<SQLiteMeal> getMeals(){
-        Cursor cursor = this.getReadableDatabase().rawQuery("SELECT meal FROM shoppingList", null);
+        Cursor cursor;
+        try {
+            cursor = this.getReadableDatabase().rawQuery("SELECT meal FROM shoppingList", null);
+        } catch (Exception e) {
+            cursor = null;
+            e.getStackTrace();
+        }
         ArrayList<SQLiteMeal> meals = new ArrayList<>();
         if (cursor != null) {
             cursor.moveToFirst();
@@ -119,7 +130,9 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
                 Icursor.close();
             }
         }
-        cursor.close();
+        if (cursor != null){
+            cursor.close();
+        }
         return meals;
     }
 }

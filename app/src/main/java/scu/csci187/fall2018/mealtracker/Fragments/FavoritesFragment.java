@@ -57,16 +57,16 @@ public class FavoritesFragment extends Fragment {
             TODO: DB call to get list of Favorited Meals (primaryKey is bookmarkURL)
          */
         // DB Calls to build List<string> meals/pics for search
-        recipeRecords = this.getRecipeRecordsFromDB();
+        //recipeRecords = this.getRecipeRecordsFromDB();
 
-        for (RecipeRecord rr : recipeRecords) {
-            meals.add(rr.getName());
-            pics.add(rr.getPicURL());
-        }
+//        for (RecipeRecord rr : recipeRecords) {
+//            meals.add(rr.getName());
+//            pics.add(rr.getPicURL());
+//        }
 
     }
 
-    public ArrayList<RecipeRecord> getRecipeRecordsFromDB() {
+ /*   public ArrayList<RecipeRecord> getRecipeRecordsFromDB() {
 
         // TODO HARDCODED. CHANGE TO GET DATA FROM DB.
         ArrayList<String> r1l = new ArrayList<>();
@@ -83,7 +83,9 @@ public class FavoritesFragment extends Fragment {
         rr.add(r2);
 
         return rr;
+        return r1l;
     }
+   */
 
     public void createAndAttachRVAdapter() {
         ArrayList<String> bookmarkURL = new ArrayList<>();

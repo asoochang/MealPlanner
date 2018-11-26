@@ -70,6 +70,15 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.itemName.setText(meals.get(position));
         holder.itemDate.setText(dates.get(position));
+        int timeOfDay = blds.get(position);
+        switch(timeOfDay) {
+            case 0: holder.bldText.setText("breakfast");
+                break;
+            case 1: holder.bldText.setText("lunch");
+                break;
+            case 2: holder.bldText.setText("dinner");
+        }
+
         new ImageLoaderFromUrl(holder.imView).execute(picUrls.get(position));
     }
 
@@ -83,6 +92,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
         private ImageView imView;
         private TextView itemDate;
         private TextView itemName;
+        private TextView bldText;
         private LinearLayout homeLayout;
 
         public MyViewHolder(View itemView) {
@@ -91,6 +101,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
             imView = itemView.findViewById(R.id.listItemPic);
             itemDate = itemView.findViewById(R.id.listItemDate);
             itemName = itemView.findViewById(R.id.listItemName);
+            bldText = itemView.findViewById(R.id.bldText);
             homeLayout = itemView.findViewById(R.id.homeLinearLayout);
             itemView.setOnClickListener(this);
         }

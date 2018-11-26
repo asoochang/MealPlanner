@@ -1,7 +1,9 @@
 package scu.csci187.fall2018.mealtracker.Classes;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,12 +66,8 @@ public class UpcomingRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingRe
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.itemName.setText(meals.get(position));
         holder.itemDate.setText(dates.get(position));
-        /*
-            TODO: DB CALL TO GET IF MEAL IS SCHEDULED FOR BREAKFAST/LUNCH/DINNER
-            int mealOfDay = 0;  // 0 = breakfast, 1 = lunch, 2 = dinner
-         */
-        int mealOfDay = 0;
-        switch(mealOfDay) {
+        int timeOfDay = blds.get(position);
+        switch(timeOfDay) {
             case 0: holder.bldText.setText("breakfast");
                 break;
             case 1: holder.bldText.setText("lunch");

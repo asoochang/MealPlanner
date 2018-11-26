@@ -14,16 +14,17 @@ public class RecipeRecord {
         String[] splitInput = input.split("/");
 
         int monthIndex = 0, dayIndex = 1, yearIndex = 2;
-        int month = Integer.parseInt(splitInput[monthIndex]);
+        // Subtract 1 because month is indexed starting at 0 for Jan
+        // And values inputted are in standard human month numbering
+        int month = Integer.parseInt(splitInput[monthIndex]) - 1;
         int day = Integer.parseInt(splitInput[dayIndex]);
         int year = Integer.parseInt(splitInput[yearIndex]);
 
         this.date = new GregorianCalendar(year, month, day).getTime();
     }
 
-    public RecipeRecord (String bookmarkURL, String name, String dateString, int time) {
+    public RecipeRecord (String bookmarkURL, String dateString, int time) {
         this.bookmarkURL = bookmarkURL;
-        this.name = name;
         this.dateString = dateString;
         this.time = time;
         this.getDateFromString(this.dateString);

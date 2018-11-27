@@ -131,7 +131,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int mealNOR;
         String urlR;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM History where email =" + "\"" + email + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM History", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -286,7 +286,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int favorite = 0;
         Cursor cursor;
         try {
-            cursor = getReadableDatabase().rawQuery("SELECT isFavorite FROM userMeals where url = " + "\"" + url + "\"", null);
+            cursor = getReadableDatabase().rawQuery("SELECT isFavorite FROM UserMeals where url = " + "\"" + url + "\"", null);
         } catch (Exception e) {
             cursor = null;
             e.getStackTrace();

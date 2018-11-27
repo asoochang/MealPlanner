@@ -34,6 +34,8 @@ public class Recipe {
             return value.getString("label");
         } catch (JSONException e) {
             return "";
+        } catch (NullPointerException e) {
+            return "";
         }
     }
     public String linkInAPI () {
@@ -48,6 +50,8 @@ public class Recipe {
         try {
             return value.getString("image");
         } catch (JSONException e) {
+            return "";
+        } catch (NullPointerException e) {
             return "";
         }
     }

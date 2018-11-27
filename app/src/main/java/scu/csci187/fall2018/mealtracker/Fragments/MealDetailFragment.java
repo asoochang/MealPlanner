@@ -69,6 +69,7 @@ public class MealDetailFragment extends Fragment {
             index = getArguments().containsKey("index") ? getArguments().getInt("index") : -1;
             showMadeButton = getArguments().containsKey("madeThis") && getArguments().getBoolean("madeThis");
         }
+
     }
 
     @Override
@@ -85,11 +86,11 @@ public class MealDetailFragment extends Fragment {
             bindViews(view);
             attachUIListeners();
             populateMealData();
-            setupRatingBarAndFavorite();
+
             if(showMadeButton)
                 buttonMadeThis.setVisibility(View.VISIBLE);
         }
-
+        setupRatingBarAndFavorite();
         return view;
     }
 
@@ -203,26 +204,26 @@ public class MealDetailFragment extends Fragment {
     private void setupRatingBarAndFavorite() {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
 
-        mealIsFavorited = myDB.isFavorite(recipeURL);
+        mealIsFavorited = myDB.isFavorite(bookmarkURL);
         if(mealIsFavorited)
             ivFavorite.setImageResource(R.drawable.ic_favorite);
         else
             ivFavorite.setImageResource(R.drawable.ic_favorite_no);
-        mealRating = myDB.getRating(recipeURL);
+        mealRating = myDB.getRating(bookmarkURL);
         mealRatingBar.setRating(mealRating);
     }
 
     private void updateUserMealRatingInDB(int newRating) {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        myDB.updateRating(recipeURL, newRating);
+        myDB.updateRating(bookmarkURL, newRating);
     }
 
     private void updateMealFavoriteInDB(boolean isFavorited) {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
         if(isFavorited)
-            myDB.addToFavorites(recipeURL);
+            myDB.addToFavorites(bookmarkURL);
         else
-            myDB.removeFromFavorites(recipeURL);
+            myDB.removeFromFavorites(bookmarkURL);
     }
 
     private void scheduleMealInDB(int year, int month, int day) {
@@ -230,12 +231,12 @@ public class MealDetailFragment extends Fragment {
         String date = month + "/" + day + "/" + year;
         int mealNO = 1;
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        myDB.addMeal(date, recipeURL, mealNO);
+        myDB.addMeal(date, bookmarkURL, mealNO);
     }
 
     private void updateMadeMealInDB() {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        myDB.flagMeal(recipeURL);
+        myDB.flagMeal(bookmarkURL);
     }
 
     public void populateMealData() {

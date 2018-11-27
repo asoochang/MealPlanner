@@ -58,16 +58,21 @@ public class FavoritesFragment extends Fragment {
         pics = new ArrayList<>();
 
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        ArrayList<String> bookmarkURLs = myDB.getFavorites();
+        ArrayList<String> myBookmarkURLs = myDB.getFavorites();
+        for (String bookmark : myBookmarkURLs){
+            System.out.println("Bookmark holds: " + bookmark);
+            System.out.flush();
+        }
 
-        this.bookmarkURLs = bookmarkURLs;
         recipes = new ArrayList<>();
-        recipes = new APIHandler().getRecipesFromBookmarks(bookmarkURLs);
+        recipes = new APIHandler().getRecipesFromBookmarks(myBookmarkURLs);
 
-
-        for (Recipe r: recipes) {
-            meals.add(r.name());
-            pics.add(r.imageUrl());
+        if (recipes.size() > 0) {
+            this.bookmarkURLs = new ArrayList<>(myBookmarkURLs);
+            for (Recipe r : recipes) {
+                meals.add(r.name());
+                pics.add(r.imageUrl());
+            }
         }
 
     }

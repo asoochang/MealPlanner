@@ -23,26 +23,32 @@ public class APIHandler extends AsyncTask<String, Void, JSONObject> {
     public ArrayList<Recipe> getRecipesFromBookmarks(ArrayList<String> bookmarkedMeals) {
 
         ArrayList<Recipe> recipes = new ArrayList<>();
+        if (bookmarkedMeals.size() > 0) {
 
-        QueryParam qp = new QueryParam();
-        for (int i = 0; i < bookmarkedMeals.size(); ++i) {
-            String currentMealLink = bookmarkedMeals.get(i);
-            String formattedLink = qp.getFormattedBookmarkURL(currentMealLink);
-            JSONObject json;
 
-            try {
-                json = new APIHandler().execute( formattedLink ).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-                json = new JSONObject();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                json = new JSONObject();
+            QueryParam qp = new QueryParam();
+            for (int i = 0; i < bookmarkedMeals.size(); ++i) {
+                String currentMealLink = bookmarkedMeals.get(i);
+                String formattedLink = qp.getFormattedBookmarkURL(currentMealLink);
+                JSONObject json;
 
+                try {
+                    json = new APIHandler().execute( formattedLink ).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                    json = new JSONObject();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    json = new JSONObject();
+
+                }
+
+                Recipe returnedRecipe = new Recipe(json);
+                if (returnedRecipe != null) {
+                    recipes.add(returnedRecipe);
+                }
             }
 
-            Recipe returnedRecipe = new Recipe(json);
-            recipes.add(returnedRecipe);
         }
         return recipes;
     }
@@ -122,7 +128,7 @@ public class APIHandler extends AsyncTask<String, Void, JSONObject> {
                 } else {
                     try {
                         JSONArray jsonArray = ( (JSONArray) new JSONTokener(stringBuilder.toString()).nextValue() );
-                        return jsonArray.getJSONObject(0);
+                         return jsonArray.getJSONObject(0);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         return null;

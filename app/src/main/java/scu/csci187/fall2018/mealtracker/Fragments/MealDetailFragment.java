@@ -227,8 +227,8 @@ public class MealDetailFragment extends Fragment {
 
     private void scheduleMealInDB(int year, int month, int day) {
         Toast.makeText(getContext(), "Scheduled " + mealName + " for " + month + "/" + day + "/" + year, Toast.LENGTH_LONG).show();
-        String date = "filler";
-        int mealNO = 5;
+        String date = month + "/" + day + "/" + year;
+        int mealNO = 1;
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
         myDB.addMeal(date, recipeURL, mealNO);
     }

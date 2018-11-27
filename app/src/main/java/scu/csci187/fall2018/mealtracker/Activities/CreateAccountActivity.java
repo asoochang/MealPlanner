@@ -42,6 +42,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 weight = Integer.parseInt(inWeight.getText().toString());
 
                 tryToRegister(fname, lname, height, weight, email, pw);
+                finish(); // go back to LoginActivity
             }
         });
 

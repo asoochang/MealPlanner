@@ -60,15 +60,15 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
         if (cursor != null) {
             cursor.moveToFirst();
-            do {
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
                 try {
                     user = cursor.getString(cursor.getColumnIndexOrThrow("email"));
                 }catch (Exception e) {
-                    cursor = null;
                     e.getStackTrace();
                 }
-            }while (cursor.moveToNext());
+            }
         }
+        cursor.close();
         if(!(("null").equals(user)))
             return true;
         return false;
@@ -110,13 +110,19 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM History where day = " + "\"" + day + "\"" + "and email =" + "\"" + email + "\"", null);
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                dayR = cursor.getString(cursor.getColumnIndexOrThrow("day"));
-                mealNOR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNO"));
-                urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
-                list.add(new RecipeRecord(urlR, dayR, mealNOR));
-            }
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    dayR = cursor.getString(cursor.getColumnIndexOrThrow("day"));
+                    mealNOR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNO"));
+                    urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
+                    list.add(new RecipeRecord(urlR, dayR, mealNOR));
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
+            };
         }
+        if (cursor!=null)
+            cursor.close();
         return list;
     }
     public ArrayList<RecipeRecord> getMeals (){
@@ -126,15 +132,22 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         String urlR;
 
         Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM History where email =" + "\"" + email + "\"", null);
+
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                dayR = cursor.getString(cursor.getColumnIndexOrThrow("day"));
-                mealNOR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNO"));
-                urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
-                list.add(new RecipeRecord(urlR, dayR, mealNOR));
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    dayR = cursor.getString(cursor.getColumnIndexOrThrow("day"));
+                    mealNOR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNO"));
+                    urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
+                    list.add(new RecipeRecord(urlR, dayR, mealNOR));
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         }
+        if (cursor!=null)
+            cursor.close();
         return list;
     }
     //Favorite Meals as an ArrayList of urls
@@ -145,11 +158,17 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM UserMeals where isFavorite = 1 and email = " + "\"" + email + "\"", null);
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
-                list.add(urlR);
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
+                    list.add(urlR);
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         }
+        if (cursor!=null)
+            cursor.close();
         return list;
     }
 
@@ -162,12 +181,18 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
-                made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
-                favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
+                    made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
+                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         }
+        if (cursor!=null)
+            cursor.close();
         if (rating == -1 && favorite == 0 && made == 0) {
             ContentValues cv = new ContentValues();
             cv.put("email", email);
@@ -194,12 +219,18 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
-                favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
-                made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
+                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
+                    made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         }
+        if (cursor!=null)
+            cursor.close();
         if (rating == -1 && favorite == 1 && made == 0) {
             String sql = "delete from UserMeals where url =" + "\"" + url + "\"" + "and email =" + "\"" + email + "\"";
             db.execSQL(sql);
@@ -217,12 +248,18 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
-                favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
-                made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
+                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
+                    made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         }
+        if (cursor!=null)
+            cursor.close();
         if (rating == -1 && favorite == 0) {
             ContentValues cv = new ContentValues();
             cv.put("email", email);
@@ -253,10 +290,16 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                favorite = cursor.getInt(cursor.getColumnIndexOrThrow("isFavorite"));
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("isFavorite"));
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         }
+        if (cursor!=null)
+            cursor.close();
         return (favorite==1);
     }
     public int getRating (String url){
@@ -266,10 +309,16 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         Cursor cursor = getReadableDatabase().rawQuery("SELECT rating FROM userMeals where url = " + url + "and email =" + email, null);
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                rating = cursor.getInt(cursor.getColumnIndexOrThrow("isFavorite"));
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    rating = cursor.getInt(cursor.getColumnIndexOrThrow("isFavorite"));
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         }
+        if (cursor!=null)
+            cursor.close();
         return rating;
     }
     public UserPreferences getPreferences(){
@@ -284,14 +333,20 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         Cursor cursor = getReadableDatabase().rawQuery("SELECT calLow, calHigh, dietLabel, maxTime FROM User where email =" + email, null);
         if (cursor != null) {
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
-                calLow = cursor.getInt(cursor.getColumnIndexOrThrow("calLow"));
-                calHigh = cursor.getInt(cursor.getColumnIndexOrThrow("calHigh"));
-                dietLabel = cursor.getInt(cursor.getColumnIndexOrThrow("dietLabel"));
-                maxTime = cursor.getInt(cursor.getColumnIndexOrThrow("maxTime"));
-                healthLabel = cursor.getString(cursor.getColumnIndexOrThrow("healthLabel"));
+            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
+                try {
+                    calLow = cursor.getInt(cursor.getColumnIndexOrThrow("calLow"));
+                    calHigh = cursor.getInt(cursor.getColumnIndexOrThrow("calHigh"));
+                    dietLabel = cursor.getInt(cursor.getColumnIndexOrThrow("dietLabel"));
+                    maxTime = cursor.getInt(cursor.getColumnIndexOrThrow("maxTime"));
+                    healthLabel = cursor.getString(cursor.getColumnIndexOrThrow("healthLabel"));
+                }catch (Exception e) {
+                    e.getStackTrace();
+                }
             }
         }
+        if (cursor!=null)
+            cursor.close();
         boolean[] arr = new boolean[11];
         for (int i = 0; i<11; i++)
             arr[i] = ((healthLabel.charAt(i)) == '1');

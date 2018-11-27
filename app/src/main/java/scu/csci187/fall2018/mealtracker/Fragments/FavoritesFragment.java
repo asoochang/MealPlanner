@@ -60,6 +60,7 @@ public class FavoritesFragment extends Fragment {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
         ArrayList<String> bookmarkURLs = myDB.getFavorites();
 
+        this.bookmarkURLs = bookmarkURLs;
         recipes = new ArrayList<>();
         recipes = new APIHandler().getRecipesFromBookmarks(bookmarkURLs);
 
@@ -72,10 +73,6 @@ public class FavoritesFragment extends Fragment {
     }
 
     public void createAndAttachRVAdapter() {
-        for (RecipeRecord rr : recipeRecords) {
-            bookmarkURLs.add(rr.getBookmarkURL());
-        }
-
         FavoritesRecyclerViewAdapter favoritesAdapter = new FavoritesRecyclerViewAdapter(getContext(),
                 meals, pics, bookmarkURLs, this);
         rvFavorites.setLayoutManager(new LinearLayoutManager(getActivity()));

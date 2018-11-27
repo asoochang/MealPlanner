@@ -176,16 +176,16 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int rating = -1;
         int favorite = 0;
         int made = 0;
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, favorites, made FROM UserMeals where url = " + url, null);
+
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " + "\"" + url + "\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
                 try {
                     rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
+                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("isFavorite"));
                     made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
-                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
                 }catch (Exception e) {
                     e.getStackTrace();
                 }
@@ -200,13 +200,18 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cv.put("rating", -1);
             cv.put("isFavorite", 1);
             cv.put("made", 0);
+            SQLiteDatabase db = getWritableDatabase();
             db.beginTransaction();
             db.insert("UserMeals", null, cv);
             db.setTransactionSuccessful();
             db.endTransaction();
         } else if (rating != -1) {
             String sql = "update UserMeals set isFavorite = 1 where url = " + "\"" +  url + "\"" + "and email = " + "\"" + email + "\"";
+            SQLiteDatabase db = getWritableDatabase();
+            db.beginTransaction();
             db.execSQL(sql);
+            db.setTransactionSuccessful();
+            db.endTransaction();
         }
     }
 
@@ -215,14 +220,14 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int favorite = 0;
         int made = 0;
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, favorites, made FROM UserMeals where url = " + "\"" + url + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " + "\"" + url + "\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
                 try {
                     rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
-                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
+                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("isFavorite"));
                     made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
                 }catch (Exception e) {
                     e.getStackTrace();
@@ -235,7 +240,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             String sql = "delete from UserMeals where url =" + "\"" + url + "\"" + "and email =" + "\"" + email + "\"";
             db.execSQL(sql);
         } else if (rating != -1 || made != 0) {
-            String sql = "update UserMeals set IsFavorite = 0 where url = " + "\"" + url + "\"" + "and email = " + "\"" + email + "\"";
+            String sql = "update UserMeals set isFavorite = 0 where url = " + "\"" + url + "\"" + "and email = " + "\"" + email + "\"";
             db.execSQL(sql);
         }
     }
@@ -244,14 +249,14 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int favorite = 0;
         int made = 0;
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, favorites FROM UserMeals where url = " + "\"" + url + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite FROM UserMeals where url = " + "\"" + url + "\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
                 try {
                     rating = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
-                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("favorites"));
+                    favorite = cursor.getInt(cursor.getColumnIndexOrThrow("isFavorite"));
                     made = cursor.getInt(cursor.getColumnIndexOrThrow("made"));
                 }catch (Exception e) {
                     e.getStackTrace();
@@ -282,10 +287,10 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int favorite = 0;
         Cursor cursor;
         try {
-            cursor = getReadableDatabase().rawQuery("SELECT isFavorite FROM userMeals where url = " + "\"" + url + "\"" + "and email =" + "\"" + email + "\"", null);
+            cursor = getReadableDatabase().rawQuery("SELECT isFavorite FROM userMeals where url = " + "\"" + url + "\"", null);
         } catch (Exception e) {
-        cursor = null;
-        e.getStackTrace();
+            cursor = null;
+            e.getStackTrace();
         }
 
         if (cursor != null) {
@@ -306,7 +311,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         ArrayList<RecipeRecord> list = new ArrayList<RecipeRecord>();
         int rating = -1;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating FROM userMeals where url = " + url + "and email =" + email, null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating FROM userMeals where url = " + "\""  + url + "\"", null);
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {

@@ -72,9 +72,8 @@ public class FavoritesFragment extends Fragment {
     }
 
     public void createAndAttachRVAdapter() {
-        ArrayList<String> bookmarkURL = new ArrayList<>();
         for (RecipeRecord rr : recipeRecords) {
-            bookmarkURL.add(rr.getBookmarkURL());
+            bookmarkURLs.add(rr.getBookmarkURL());
         }
 
         FavoritesRecyclerViewAdapter favoritesAdapter = new FavoritesRecyclerViewAdapter(getContext(),

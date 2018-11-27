@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -79,25 +80,15 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    /*
-        TODO: swap this out for LoginManager stuff
-    */
     // to add if more time: salt + hashing function for password
     // store only hashed pw in DB, hash inputtedPw and then check against DB
     boolean loginSuccessful(String email, String pw) {
-        // DB query to look-up email, pw in User table
-
-        /*if e-mail not in database
-              return false
-        if e-mail in DB, check inputted pw against DB pw
-            if inputtedPw == dbPw
-                return true;
-            else
-                return false
-        */
-
-        // for testing dialogue Toast
-        return true;
+        SQLiteUserManager myDB = new SQLiteUserManager(this);
+        boolean success = myDB.login(email, pw);
+        //if (success)
+            //myDB.setEmail(email);
+        myDB.close();
+        return success;
     }
 }
 

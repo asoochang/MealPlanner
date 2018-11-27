@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.R;
 
 public class CreateAccountActivity extends AppCompatActivity {
@@ -41,6 +42,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 weight = Integer.parseInt(inWeight.getText().toString());
 
                 tryToRegister(fname, lname, height, weight, email, pw);
+                finish(); // go back to LoginActivity
             }
         });
 
@@ -54,20 +56,8 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private void tryToRegister(String fname, String lname, int height, int weight,
                                   String email, String pw) {
-        /*
-            PRECHECKS: make sure all fields have values
-            1. Check database for existing email
-            2. a- If yes, display error Toast and clear all EditText fields (setText(""))
-               b- If no, create database entry in User table
-
-         */
-
-        /*
-            if(accountCreationSuccessful)
-                finish();  //returns to LoginActivity
-            else
-                //clear all input fields
-         */
-
+        SQLiteUserManager myDB = new SQLiteUserManager(this);
+        myDB.initUser(email, pw);
+        myDB.close();
     }
 }

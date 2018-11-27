@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity
                 if(frag == null)
                     return new FavoritesFragment();
                 else
-                    return frag;
+                    return new FavoritesFragment();
             case 3:
                 frag = getSupportFragmentManager().findFragmentByTag(TAG_SHOPPING);
                 if(frag == null)

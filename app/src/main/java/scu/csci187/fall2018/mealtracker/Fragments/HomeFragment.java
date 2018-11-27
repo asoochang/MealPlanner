@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import scu.csci187.fall2018.mealtracker.Activities.MainActivity;
 import scu.csci187.fall2018.mealtracker.Classes.APIHandler;
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,30 +80,11 @@ public class HomeFragment extends Fragment  {
     }
 
     public void populateListDataFromDB() {
-        /*
-            TODO:
-            Call the DB accession file;
-            Return list here as meals;
 
-            Data currently hardcoded
-         */
-
-        // Meals should be given DB values (bookmark links)
-
-        ArrayList<RecipeRecord> recipeRecords = /*TODO change to DB call ->*/ new ArrayList<>();
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+        ArrayList<RecipeRecord> recipeRecords = myDB.getMeals();
         ArrayList<String> bookmarkedMeals = new ArrayList<>();
         ArrayList<Recipe> recipes;
-
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
-                                                "11/26/2018", 0));
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
-                "11/24/2018", 1));
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98",
-                                                "11/26/2018", 1));
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98",
-                "11/24/2018", 0));
-
-
 
         // Initialize lists that correspond to UI elements (Parallel)
 

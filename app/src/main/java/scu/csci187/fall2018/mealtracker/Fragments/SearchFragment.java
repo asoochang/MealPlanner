@@ -223,6 +223,10 @@ public class SearchFragment extends Fragment  {
         mCallback.addToShoppingList(bookmarkURL, mealName);
     }
 
+    //public void sendMealToFavorites(String bookmarkURL, String mealName) {
+    //    mCallback.addToFavorites(bookmarkURL);
+    //}
+
     public interface SearchFragmentListener {
         void goToFilters(String inputString);
         void addToShoppingList(String bookmarkURL, String mealName);

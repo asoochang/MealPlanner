@@ -23,6 +23,7 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
     private List<String> meals;
     private List<String> picUrls;
     private List<String> bookmarkURL;
+    private boolean doNotDisplay;
     FavoritesFragment sourceFragment;
     private ItemClickListener clickListener;
     Context mContext;
@@ -31,6 +32,11 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
                                         FavoritesFragment sourceFragment) {
         this.meals = meals;
         this.picUrls = picUrls;
+        if (this.meals.size() <= 0) {
+            doNotDisplay = true;
+        } else {
+            doNotDisplay = false;
+        }
         this.mContext = context;
         this.sourceFragment = sourceFragment;
         this.bookmarkURL = bookmarkURL;
@@ -64,8 +70,12 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
     // Binds data to recycled views
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.itemName.setText(meals.get(position));
-        new ImageLoaderFromUrl(holder.imView).execute(picUrls.get(position));
+        if (doNotDisplay){
+            // Do not display
+        } else {
+            holder.itemName.setText(meals.get(position));
+            new ImageLoaderFromUrl(holder.imView).execute(picUrls.get(position));
+        }
     }
 
     @Override

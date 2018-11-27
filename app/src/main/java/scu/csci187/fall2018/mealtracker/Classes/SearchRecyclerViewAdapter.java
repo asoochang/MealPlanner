@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import scu.csci187.fall2018.mealtracker.Activities.MainActivity;
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.Fragments.SearchFragment;
 import scu.csci187.fall2018.mealtracker.R;
 
@@ -83,9 +84,11 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             @Override
             public void onClick(View v) {
                 final int position = vHolder.getAdapterPosition();
-                /*
-                        TODO: DB call to add Meal to favorites
-                     */
+                String mealBookmark = bookmarkURLs.get(position);
+
+                SQLiteUserManager myDB = new SQLiteUserManager(mContext);
+                myDB.addToFavorites(mealBookmark);
+
                 vHolder.tvAddFavorite.setText("                          ");
                 vHolder.addToFavorites.setImageResource(R.drawable.ic_done);
 

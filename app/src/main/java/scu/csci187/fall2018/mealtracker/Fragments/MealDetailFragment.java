@@ -27,6 +27,8 @@ import scu.csci187.fall2018.mealtracker.Classes.ImageLoaderFromUrl;
 import scu.csci187.fall2018.mealtracker.Classes.Ingredient;
 import scu.csci187.fall2018.mealtracker.Classes.Ingredients;
 import scu.csci187.fall2018.mealtracker.Classes.Recipe;
+import scu.csci187.fall2018.mealtracker.Classes.RecipeRecord;
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.R;
 
 
@@ -199,46 +201,41 @@ public class MealDetailFragment extends Fragment {
     }
 
     private void setupRatingBarAndFavorite() {
-        /*
-            TODO: Query DB for: is meal favorited, meal rating
-            use  String vars   mealName/bookmarkURL to query DB
-         */
-        mealIsFavorited = true; // query result here
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+
+        mealIsFavorited = myDB.isFavorite(recipeURL);
         if(mealIsFavorited)
             ivFavorite.setImageResource(R.drawable.ic_favorite);
         else
             ivFavorite.setImageResource(R.drawable.ic_favorite_no);
-        mealRating = 2; // query result here
+        mealRating = myDB.getRating(recipeURL);
         mealRatingBar.setRating(mealRating);
     }
 
     private void updateUserMealRatingInDB(int newRating) {
-        /*
-            TODO: Write meal rating to DB for User
-            use  String vars   mealName/bookmarkURL to write to DB
-         */
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+        myDB.updateRating(recipeURL, newRating);
     }
+
     private void updateMealFavoriteInDB(boolean isFavorited) {
-        /*
-            TODO: Write meal favorite to DB for User
-            use  String vars   mealName/bookmarkURL to write to DB
-         */
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+        if(isFavorited)
+            myDB.addToFavorites(recipeURL);
+        else
+            myDB.removeFromFavorites(recipeURL);
     }
 
     private void scheduleMealInDB(int year, int month, int day) {
-        /*
-            TODO: DB call to add Meal to Scheduled Meals
-            use String vars bookmarkURL and mealName (they are public MealDetailFragment attributes)
-         */
         Toast.makeText(getContext(), "Scheduled " + mealName + " for " + month + "/" + day + "/" + year, Toast.LENGTH_LONG).show();
-        // Once DB is updated, create and nav to new HomeFragment to re-initialize Upcoming/History lists, clear backstack
-                //TO TAKE OUT: (leave in case need to revert) scheduleMealListener.showHomeScreenAfterScheduleMeal();
+        String date = "filler";
+        int mealNO = 5;
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+        myDB.addMeal(date, recipeURL, mealNO);
     }
 
     private void updateMadeMealInDB() {
-        /*
-            TODO: DB call to update "made this" flag for meal
-         */
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+        myDB.flagMeal(recipeURL);
     }
 
     public void populateMealData() {
@@ -269,6 +266,7 @@ public class MealDetailFragment extends Fragment {
             mealRating =
             mealRatingBar.setRating(mealRating);
          */
+
 
     }
 

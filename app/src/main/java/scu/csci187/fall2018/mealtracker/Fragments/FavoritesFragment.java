@@ -1,6 +1,5 @@
 package scu.csci187.fall2018.mealtracker.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +17,7 @@ import scu.csci187.fall2018.mealtracker.Classes.APIHandler;
 import scu.csci187.fall2018.mealtracker.Classes.FavoritesRecyclerViewAdapter;
 import scu.csci187.fall2018.mealtracker.Classes.Recipe;
 import scu.csci187.fall2018.mealtracker.Classes.RecipeRecord;
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.R;
 
 
@@ -48,38 +47,20 @@ public class FavoritesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favorites_layout, container, false);
         rvFavorites = view.findViewById(R.id.rvFavorites);
-        populateFavoritesListFromAPI();
+        populateFavoritesListFromDB();
         createAndAttachRVAdapter();
 
         return view;
     }
 
-    public void populateFavoritesListFromAPI() {
+    public void populateFavoritesListFromDB() {
         meals = new ArrayList<>();
         pics = new ArrayList<>();
 
-        /*
-            TODO: DB call to get list of Favorited Meals (primaryKey is bookmarkURL)
-         */
-        // DB Calls to build List<string> meals/pics for search
-        recipeRecords = /* TODO GET FROM DB */ new ArrayList<>();
-
-        // TODO REMOVE HARDCODED VALUES WHEN WE HAVE DB
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
-                "11/26/2018", 0));
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_3da1169eb633a5e4607890ebf7dee89f",
-                "11/24/2018", 1));
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98",
-                "11/26/2018", 1));
-        recipeRecords.add(new RecipeRecord("http://www.edamam.com/ontologies/edamam.owl#recipe_d81795fb677ba4f12ab1a104e10aac98",
-                "11/24/2018", 0));
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+        ArrayList<String> bookmarkURLs = myDB.getFavorites();
 
         recipes = new ArrayList<>();
-        bookmarkURLs = new ArrayList<>();
-        for (RecipeRecord rr : recipeRecords) {
-            bookmarkURLs.add(rr.getBookmarkURL());
-        }
-
         recipes = new APIHandler().getRecipesFromBookmarks(bookmarkURLs);
 
 

@@ -83,9 +83,10 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             @Override
             public void onClick(View v) {
                 final int position = vHolder.getAdapterPosition();
-                /*
-                        TODO: DB call to add Meal to favorites
-                     */
+                //String mealBookmark = bookmarkURLs.get(position);
+                //TODOTODOTODO
+                //sourceFragment.sendMealToFavorites(mealBookmark);
+
                 vHolder.tvAddFavorite.setText("                          ");
                 vHolder.addToFavorites.setImageResource(R.drawable.ic_done);
 

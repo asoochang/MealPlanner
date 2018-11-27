@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.R;
 import scu.csci187.fall2018.mealtracker.Classes.UserPreferences;
 
@@ -75,10 +76,8 @@ public class PreferencesFragment extends Fragment {
     }
 
     public void populatePreferencesFromDB(){
-        UserPreferences prefFromDb; // = someDBCall
-        /*
-            TODO: GET PREFRENCES FROM DATABASE
-         */
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+        UserPreferences prefFromDb = myDB.getPreferences();
     }
 
     public void savePreferencesToDB() {

@@ -107,6 +107,7 @@ public class MealDetailFragment extends Fragment {
             madeMealListener = (MealDetailFragment.MadeMealListener) context;
             scheduleMealListener = (MealDetailFragment.ScheduleMealListener) context;
         }
+
         else {
             throw new RuntimeException(context.toString()
                     + " must implement MadeMealListener and/or ScheduleMealListener");
@@ -237,9 +238,11 @@ public class MealDetailFragment extends Fragment {
                                 });
                                 chooseBldDialog.show();
                                 scheduleMealInDB(year, month+1, dayOfMonth, bldChoice);
+
                             }
                         }, year, month, day);
                 picker.show();
+                sendToShoppingList(bookmarkURL);
             }
         });
     }
@@ -325,9 +328,14 @@ public class MealDetailFragment extends Fragment {
 
     public interface ScheduleMealListener {
         void showHomeScreenAfterScheduleMeal();
+
+        void sendToShoppingListFromMealFragment(String bookmarkURL);
     }
 
     public interface MadeMealListener {
         void afterMadeMealClick();
+    }
+    public void sendToShoppingList(String bookmarkURL) {
+        scheduleMealListener.sendToShoppingListFromMealFragment(bookmarkURL);
     }
 }

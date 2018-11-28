@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity
         Ingredients ingredients = recipes.get(0).ingredients();
         for (int i = 0; i < ingredients.length(); ++i) {
             Ingredient currentIngredient = ingredients.getIngredientAtIndex(i);
-            ingredientsAsStrings.add(currentIngredient.food());
+            ingredientsAsStrings.add(currentIngredient.text());
         }
         Set<String> ingredientSet = new HashSet<>();
         ingredientSet.addAll(ingredientsAsStrings);

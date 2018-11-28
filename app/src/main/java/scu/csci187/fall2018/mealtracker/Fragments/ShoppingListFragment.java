@@ -71,7 +71,7 @@ public class ShoppingListFragment extends Fragment implements
         //Load shopping list into UI
         if(mealData.size() > 0) {
             for(final SQLiteMeal meal : mealData) {
-                final String fMealName = meal.getMealName();
+                final String fMealName = meal.getMealName().replace("_", " ");
                 ArrayList<CheckBox> boxes = new ArrayList<>();
 
                 TextView name = new TextView(getContext());
@@ -84,7 +84,7 @@ public class ShoppingListFragment extends Fragment implements
                 for(SQLiteIngredient ingredient : meal.getIngredients()) {
                     CheckBox cb = new CheckBox(getContext());
                     int y = View.generateViewId();
-                    cb.setText(ingredient.getIngredient());
+                    cb.setText(ingredient.getIngredient().replace("_", " "));
                     cb.setId(y);
                     cb.setChecked(ingredient.isChecked);
 

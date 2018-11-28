@@ -1,6 +1,6 @@
 package scu.csci187.fall2018.mealtracker.Activities;
 
-import android.os.Parcelable;
+import android.app.ActionBar;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -122,6 +122,8 @@ public class MainActivity extends AppCompatActivity
                                 navItemIndex = 4;
                                 CURRENT_TAG = TAG_PREFERENCES;
                                 break;
+                            case R.id.action_logout:
+                                finish();
                             default:
                                 navItemIndex = 0;
                         }
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = getHomeFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        //fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

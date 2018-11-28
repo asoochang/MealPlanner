@@ -19,8 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.CreateAccountActivity"
-            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".Activities.CreateAccountActivity"/>
         <activity android:name=".Activities.MainActivity" />
         <activity android:name=".Activities.ViewRecipeActivity" />
     </application>

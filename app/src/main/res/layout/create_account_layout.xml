@@ -42,7 +42,8 @@
         android:id="@+id/inputPassword"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:hint="@string/password" />
+        android:hint="@string/password"
+        android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/buttonRegister"

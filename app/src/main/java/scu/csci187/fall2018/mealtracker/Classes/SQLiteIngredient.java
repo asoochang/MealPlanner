@@ -10,7 +10,7 @@ public class SQLiteIngredient {
     }
 
     public SQLiteIngredient(String ingredient, Boolean isChecked){
-        this.ingredient = ingredient.replaceAll(" ", "_");
+        this.ingredient = ingredient.replaceAll("[^a-zA-Z\\d/.,]", "_");
         this.isChecked = isChecked;
     }
 

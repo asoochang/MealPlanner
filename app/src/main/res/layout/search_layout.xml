@@ -26,14 +26,16 @@
             android:src="@drawable/ic_filter"
             android:scaleType="fitXY"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            style="@style/Widget.AppCompat.Button.Colored"/>
     </RelativeLayout>
 
     <Button
         android:id="@+id/buttonSearchGo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/search"/>
+        android:text="@string/search"
+        style="@style/Widget.AppCompat.Button.Colored"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvSearch"

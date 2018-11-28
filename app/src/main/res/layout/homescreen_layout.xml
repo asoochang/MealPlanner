@@ -14,19 +14,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+      <!--  <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/today_s_calories"/>
+                android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/todaysCalories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100"/>
-        </LinearLayout>
+                android:text=""/>
+        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -35,30 +34,30 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/macros_g_c"/>
+                android:text=""/>
             <TextView
                 android:id="@+id/macroCarb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="25"/>
+                android:text=""/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/p"/>
+                android:text=""/>
             <TextView
                 android:id="@+id/macroProtein"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="55"/>
+                android:text=""/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/f"/>
+                android:text=""/>
             <TextView
                 android:id="@+id/macroFat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="15"/>
+                android:text=""/>
         </LinearLayout>
     </RelativeLayout>
 
@@ -70,7 +69,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/upcoming_meals"/>
+        android:text="@string/upcoming_meals"
+        android:textSize="20dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvUpcoming"
@@ -84,7 +84,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/history"/>
+        android:text="@string/history"
+        android:textSize="20dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvHistory"

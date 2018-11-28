@@ -44,7 +44,8 @@
             android:layout_height="wrap_content"
             android:text="Schedule Meal"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            style="@style/Widget.AppCompat.Button.Colored"/>
     </FrameLayout>
 
     <RatingBar
@@ -134,7 +135,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="@string/link_to_instructions"/>
+            android:text="@string/link_to_instructions"
+            style="@style/Widget.AppCompat.Button.Colored"/>
 
     </RelativeLayout>
 

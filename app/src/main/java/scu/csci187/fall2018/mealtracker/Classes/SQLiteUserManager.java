@@ -25,8 +25,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db){
         String sql1 = "CREATE TABLE IF NOT EXISTS User (email text primary key, password text, calLow integer, calHigh integer, dietLabel integer, maxTime integer, healthLabel text)";
-        String sql2 = "CREATE TABLE IF NOT EXISTS UserMeals (email text, url text, rating integer, isFavorite integer, made integer, primary key(url, email), foreign key (email) references User(email), foreign key (url) references Bookmarked(url))";
-        String sql3 = "CREATE TABLE IF NOT EXISTS History (email text, day text, mealNo integer, url text, primary key (day, mealNo, email), foreign key (email) references User(email), foreign key (url) references Bookmarked(url))";
+        String sql2 = "CREATE TABLE IF NOT EXISTS UserMeals (/*email text,*/ url text, rating integer, isFavorite integer, made integer, primary key(url), /*(foreign key (email) references User(email)*/)";
+        String sql3 = "CREATE TABLE IF NOT EXISTS History (/*email text, */day text, mealNo integer, url text, historyID primary key autoincrement, /*foreign key (email) references User(email), */foreign key (url) references UserMeals(url))";
 
         db.execSQL(sql1);
         db.execSQL(sql2);
@@ -77,17 +77,18 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
     public void updatePreferences(String email, int calHigh, int calLow, int dietLabel, int maxTime, String healthLabel){
         SQLiteDatabase db = getWritableDatabase();
         String sql = "update History set calLow ="+ calLow +", calHigh ="+ calHigh +", dietLabel ="+ dietLabel +
-                ", maxTime ="+ maxTime +", healthLabel ="+ "\"" + healthLabel + "\"" +"where email =" + "\"" + email + "\"";
+                ", maxTime ="+ maxTime +", healthLabel ="+ "\"" + healthLabel + "\"";
         db.execSQL(sql);
     }
 
     //Addmeal to history
-    public void addMeal (String day, String url, int mealNO){
+    public void addMeal (String day, String url, int mealNo){
         ContentValues cv = new ContentValues();
-        cv.put("email", email);
+        //cv.put("email", email);
         cv.put("day", day);
+        cv.put("mealNo", mealNo);
         cv.put("url", url);
-        cv.put("mealNO", mealNO);
+
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         db.insert("History", null, cv);
@@ -95,7 +96,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         db.endTransaction();
     }
     public void flagMeal (String url){
-        String sql = "update UserMeals set made = 1 where url = " + "\"" + url + "\"" +" and email = " + "\"" + email + "\"";
+        String sql = "update UserMeals set made = 1 where url = " + "\"" + url + "\"";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(sql);
     }
@@ -104,18 +105,18 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
     public ArrayList<RecipeRecord> getMealsOn (String day){
         ArrayList<RecipeRecord> list = new ArrayList<RecipeRecord>();
         String dayR;
-        int mealNOR;
+        int mealNoR;
         String urlR;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM History where day = " + "\"" + day + "\"" + "and email =" + "\"" + email + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM History where day = " + "\"" + day + "\"", null);
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
                 try {
                     dayR = cursor.getString(cursor.getColumnIndexOrThrow("day"));
-                    mealNOR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNO"));
+                    mealNoR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNo"));
                     urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
-                    list.add(new RecipeRecord(urlR, dayR, mealNOR));
+                    list.add(new RecipeRecord(urlR, dayR, mealNoR));
                 }catch (Exception e) {
                     e.getStackTrace();
                 }
@@ -126,21 +127,22 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         return list;
     }
     public ArrayList<RecipeRecord> getMeals (){
-        ArrayList<RecipeRecord> list = new ArrayList<RecipeRecord>();
+        ArrayList<RecipeRecord> list = new ArrayList<>();
         String dayR;
-        int mealNOR;
+        int mealNoR;
         String urlR;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM History", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT day, mealNo, url FROM History", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
                 try {
                     dayR = cursor.getString(cursor.getColumnIndexOrThrow("day"));
-                    mealNOR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNO"));
                     urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
-                    list.add(new RecipeRecord(urlR, dayR, mealNOR));
+                    mealNoR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNo"));
+
+                    list.add(new RecipeRecord(urlR, dayR, mealNoR));
                 }catch (Exception e) {
                     e.getStackTrace();
                 }
@@ -195,7 +197,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cursor.close();
         if (rating == 0 && favorite == 0 && made == 0) {
             ContentValues cv = new ContentValues();
-            cv.put("email", email);
+            //cv.put("email", email);
             cv.put("url", url);
             cv.put("rating", 0); // Changed from -1 to 0
             cv.put("isFavorite", 1);
@@ -267,7 +269,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cursor.close();
         if (rating == -1 && favorite == 0) {
             ContentValues cv = new ContentValues();
-            cv.put("email", email);
+            //cv.put("email", email);
             cv.put("url", url);
             cv.put("rating", newRating);
             cv.put("isFavorite", 0);

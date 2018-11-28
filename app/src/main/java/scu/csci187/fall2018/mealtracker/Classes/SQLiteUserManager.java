@@ -25,8 +25,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db){
         String sql1 = "CREATE TABLE IF NOT EXISTS User (email text primary key, password text, calLow integer, calHigh integer, dietLabel integer, maxTime integer, healthLabel text)";
-        String sql2 = "CREATE TABLE IF NOT EXISTS UserMeals (/*email text,*/ url text, rating integer, isFavorite integer, made integer, primary key(url), /*(foreign key (email) references User(email)*/)";
-        String sql3 = "CREATE TABLE IF NOT EXISTS History (/*email text, */day text, mealNo integer, url text, historyID primary key autoincrement, /*foreign key (email) references User(email), */foreign key (url) references UserMeals(url))";
+        String sql2 = "CREATE TABLE IF NOT EXISTS UserMeals (/*email text,*/ url text, rating integer, isFavorite integer, made integer, primary key(url)/*, (foreign key (email) references User(email)*/)";
+        String sql3 = "CREATE TABLE IF NOT EXISTS History (/*email text, */day text, mealNo integer, url text, historyID integer primary key autoincrement, /*foreign key (email) references User(email), */foreign key (url) references UserMeals(url))";
 
         db.execSQL(sql1);
         db.execSQL(sql2);
@@ -207,8 +207,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             db.insert("UserMeals", null, cv);
             db.setTransactionSuccessful();
             db.endTransaction();
-        } else if (rating != 0) {
-            String sql = "update UserMeals set isFavorite = 1 where url = " + "\"" +  url + "\"" + "and email = " + "\"" + email + "\"";
+        } else if (rating != 0 || made != 0) {
+            String sql = "update UserMeals set isFavorite = 1 where url = " + "\"" +  url + "\"";
             SQLiteDatabase db = getWritableDatabase();
             db.beginTransaction();
             db.execSQL(sql);
@@ -247,11 +247,11 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         }
     }
     public void updateRating(String url, int newRating){
-        int rating = -1;
+        int rating = 0;
         int favorite = 0;
         int made = 0;
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite FROM UserMeals where url = " + "\"" + url + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " + "\"" + url + "\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -267,7 +267,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         }
         if (cursor!=null)
             cursor.close();
-        if (rating == -1 && favorite == 0) {
+        if (rating == 0 && favorite == 0 && made ==0) {
             ContentValues cv = new ContentValues();
             //cv.put("email", email);
             cv.put("url", url);
@@ -278,8 +278,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             db.insert("UserMeals", null, cv);
             db.setTransactionSuccessful();
             db.endTransaction();
-        } else if (rating != -1 || made !=0) {
-            String sql = "update UserMeals set rating =" +newRating+ " where url = " + "\"" + url + "\"" + "and email = " + "\"" + email + "\"";
+        } else if (rating != 0 || made !=0 || favorite != 0) {
+            String sql = "update UserMeals set rating =" +newRating+ " where url = " + "\"" + url + "\"";
             db.execSQL(sql);
         }
     }
@@ -311,7 +311,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
     public int getRating (String url){
         int rating = 0;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating FROM userMeals where url = " + "\""  + url + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating FROM UserMeals where url = " + "\""  + url + "\"", null);
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {

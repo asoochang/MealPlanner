@@ -271,7 +271,7 @@ public class MealDetailFragment extends Fragment {
 
     private void scheduleMealInDB(int year, int month, int day, int bldChoice) {
         String date = month + "/" + day + "/" + year;
-        int mealNO = 1;
+        int mealNO = bldChoice;
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
         myDB.addMeal(date, bookmarkURL, mealNO);
     }

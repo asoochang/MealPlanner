@@ -277,7 +277,8 @@
             android:text="@string/save_preferences"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/checkboxPeanut" />
+            app:layout_constraintTop_toBottomOf="@id/checkboxPeanut"
+            style="@style/Widget.AppCompat.Button.Colored"/>
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline"

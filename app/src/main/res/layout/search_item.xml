@@ -44,7 +44,8 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_addshopping"
-                    android:scaleType="fitCenter"/>
+                    android:scaleType="fitCenter"
+                    style="@style/Widget.AppCompat.Button.Colored"/>
             </LinearLayout>
         </RelativeLayout>
         <RelativeLayout
@@ -69,7 +70,8 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_favorite"
-                    android:scaleType="fitCenter"/>
+                    android:scaleType="fitCenter"
+                    style="@style/Widget.AppCompat.Button.Colored"/>
             </LinearLayout>
         </RelativeLayout>
     </TableRow>

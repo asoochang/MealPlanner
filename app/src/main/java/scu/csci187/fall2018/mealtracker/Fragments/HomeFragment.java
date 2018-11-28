@@ -71,10 +71,10 @@ public class HomeFragment extends Fragment  {
     }
 
     private void bindViews(View view) {
-        todaysCalories = view.findViewById(R.id.todaysCalories);
-        macroCarb = view.findViewById(R.id.macroCarb);
-        macroProtein = view.findViewById(R.id.macroProtein);
-        macroFat = view.findViewById(R.id.macroFat);
+        //todaysCalories = view.findViewById(R.id.todaysCalories);
+        //macroCarb = view.findViewById(R.id.macroCarb);
+        //macroProtein = view.findViewById(R.id.macroProtein);
+        //macroFat = view.findViewById(R.id.macroFat);
         rvUpcoming = view.findViewById(R.id.rvUpcoming);
         rvHistory = view.findViewById(R.id.rvHistory);
     }

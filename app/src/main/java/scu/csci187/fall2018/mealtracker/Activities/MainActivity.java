@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity
         for(int x = 0; x < ingredientsAsStrings.size(); x++) {
             ingredientsList.add(new SQLiteIngredient(ingredientsAsStrings.get(x), false));
         }
-        SQLiteMeal thisMeal = new SQLiteMeal(mealName, ingredientsList);
+        SQLiteMeal thisMeal = new SQLiteMeal(recipes.get(0).name(), ingredientsList);
         Log.d("MAINSHOPPING", thisMeal.getMealName() + " " + thisMeal.getIngredients().get(0).getIngredient());
 
         SQLiteDBManager dbManager = new SQLiteDBManager(this);
@@ -337,5 +337,10 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void sendToShoppingListFromMealFragment(String bookmarkURL) {
+        addToShoppingList(bookmarkURL, "");
     }
 }

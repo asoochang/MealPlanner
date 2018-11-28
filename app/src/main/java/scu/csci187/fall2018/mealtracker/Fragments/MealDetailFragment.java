@@ -107,6 +107,7 @@ public class MealDetailFragment extends Fragment {
             madeMealListener = (MealDetailFragment.MadeMealListener) context;
             scheduleMealListener = (MealDetailFragment.ScheduleMealListener) context;
         }
+
         else {
             throw new RuntimeException(context.toString()
                     + " must implement MadeMealListener and/or ScheduleMealListener");
@@ -197,6 +198,9 @@ public class MealDetailFragment extends Fragment {
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
+                int chosenYear = 0;
+                int chosenMonth = 0;
+                int chosenDay = 0;
                 DatePickerDialog picker = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
@@ -222,7 +226,7 @@ public class MealDetailFragment extends Fragment {
                                 chooseBldDialog.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int index) {
-                                        setBLDchoice(index);
+                                        setBLDchoiceAndScheduleMeal(index);
                                         String mealOfDay = "";
                                         switch(bldChoice) {
                                             case 0: mealOfDay = "Breakfast"; break;
@@ -233,13 +237,18 @@ public class MealDetailFragment extends Fragment {
                                                 myMonth + "/" + myDay + "/" + myYear, Toast.LENGTH_LONG);
                                         t.setGravity(Gravity.CENTER, 0,0);
                                         t.show();
+
                                     }
                                 });
                                 chooseBldDialog.show();
-                                scheduleMealInDB(year, month+1, dayOfMonth, bldChoice);
+                                //scheduleMealInDB(myYear, myMonth+1, myDay, bldChoice);
+
                             }
+
                         }, year, month, day);
                 picker.show();
+
+                sendToShoppingList(bookmarkURL);
             }
         });
     }
@@ -319,15 +328,21 @@ public class MealDetailFragment extends Fragment {
         myDay = day;
     }
 
-    private void setBLDchoice(int index) {
+    private void setBLDchoiceAndScheduleMeal(int index) {
         bldChoice = index;
+        scheduleMealInDB(myYear, myMonth, myDay, bldChoice);
     }
 
     public interface ScheduleMealListener {
         void showHomeScreenAfterScheduleMeal();
+
+        void sendToShoppingListFromMealFragment(String bookmarkURL);
     }
 
     public interface MadeMealListener {
         void afterMadeMealClick();
+    }
+    public void sendToShoppingList(String bookmarkURL) {
+        scheduleMealListener.sendToShoppingListFromMealFragment(bookmarkURL);
     }
 }

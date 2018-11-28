@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import scu.csci187.fall2018.mealtracker.Activities.ViewRecipeActivity;
 import scu.csci187.fall2018.mealtracker.Classes.APIHandler;
@@ -297,8 +299,12 @@ public class MealDetailFragment extends Fragment {
         Ingredient ingredient;
         for (int i = 0; i < r.ingredients().length(); ++i) {
             ingredient = r.ingredients().getIngredientAtIndex(i);
-            ingredientsList.add(ingredient.food());
+            ingredientsList.add(ingredient.text());
         }
+        Set<String> ingredientSet = new HashSet<>();
+        ingredientSet.addAll(ingredientsList);
+        ingredientsList.clear();
+        ingredientsList.addAll(ingredientSet);
 
 
         ArrayAdapter<String> ingredientsAdapter = new ArrayAdapter<>(getActivity(),

@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity
         Ingredients ingredients = recipes.get(0).ingredients();
         for (int i = 0; i < ingredients.length(); ++i) {
             Ingredient currentIngredient = ingredients.getIngredientAtIndex(i);
-            ingredientsAsStrings.add(currentIngredient.food());
+            ingredientsAsStrings.add(currentIngredient.text());
         }
         Set<String> ingredientSet = new HashSet<>();
         ingredientSet.addAll(ingredientsAsStrings);
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity
         for(int x = 0; x < ingredientsAsStrings.size(); x++) {
             ingredientsList.add(new SQLiteIngredient(ingredientsAsStrings.get(x), false));
         }
-        SQLiteMeal thisMeal = new SQLiteMeal(recipes.get(0).name(), ingredientsList);
+        SQLiteMeal thisMeal = new SQLiteMeal(recipes.get(0).name().replaceAll("[^a-zA-Z\\d\\s]", "_"), ingredientsList);
         Log.d("MAINSHOPPING", thisMeal.getMealName() + " " + thisMeal.getIngredients().get(0).getIngredient());
 
         SQLiteDBManager dbManager = new SQLiteDBManager(this);

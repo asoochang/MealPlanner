@@ -1,11 +1,14 @@
 package scu.csci187.fall2018.mealtracker.Fragments;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +50,7 @@ public class MealDetailFragment extends Fragment {
     private int mealRating;
     private int index = -1;
     private boolean mealIsFavorited;
+    private int myYear, myMonth, myDay, bldChoice;
 
     private MadeMealListener madeMealListener;
     private ScheduleMealListener scheduleMealListener;
@@ -155,11 +159,17 @@ public class MealDetailFragment extends Fragment {
                     mealIsFavorited = false;
                     ivFavorite.setImageResource(R.drawable.ic_favorite_no);
                     updateMealFavoriteInDB(mealIsFavorited);
+                    Toast t = Toast.makeText(getContext(), "Meal removed from favorites list", Toast.LENGTH_SHORT);
+                    t.setGravity(Gravity.CENTER, 0,0);
+                    t.show();
                 }
                 else {
                     mealIsFavorited = true;
                     ivFavorite.setImageResource(R.drawable.ic_favorite);
                     updateMealFavoriteInDB(mealIsFavorited);
+                    Toast t = Toast.makeText(getContext(), "Meal added to favorites list", Toast.LENGTH_SHORT);
+                    t.setGravity(Gravity.CENTER, 0,0);
+                    t.show();
                 }
             }
         });
@@ -172,7 +182,6 @@ public class MealDetailFragment extends Fragment {
                 if(index == -1)
                     Toast.makeText(getContext(), "ERROR - INDEX: -1, bundle index null", Toast.LENGTH_SHORT).show();
                 else {
-                    //TO TAKE OUT: (leave in case need to revert) madeMealListener.madeMealUpdateHistory(index);
                     updateMadeMealInDB();
                 }
             }
@@ -188,12 +197,46 @@ public class MealDetailFragment extends Fragment {
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                final int myYear, myMonth, myDay;
                 DatePickerDialog picker = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                scheduleMealInDB(year, month+1, dayOfMonth);
+                                setDateVals(year, month+1, dayOfMonth);
+
+                                AlertDialog.Builder chooseBldDialog = new AlertDialog.Builder(getContext());
+                                chooseBldDialog.setTitle("Choose a meal time: ");
+
+                                ArrayList<String> bldStrings = new ArrayList<>();
+                                bldStrings.add("Breakfast");
+                                bldStrings.add("Lunch");
+                                bldStrings.add("Dinner");
+                                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.select_dialog_singlechoice, bldStrings);
+
+
+                                chooseBldDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int index) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                chooseBldDialog.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int index) {
+                                        setBLDchoice(index);
+                                        String mealOfDay = "";
+                                        switch(bldChoice) {
+                                            case 0: mealOfDay = "Breakfast"; break;
+                                            case 1: mealOfDay = "Lunch"; break;
+                                            case 2: mealOfDay = "Dinner"; break;
+                                        }
+                                        Toast t = Toast.makeText(getContext(), "Scheduled " + mealName + " for " + mealOfDay + " on " +
+                                                myMonth + "/" + myDay + "/" + myYear, Toast.LENGTH_LONG);
+                                        t.setGravity(Gravity.CENTER, 0,0);
+                                        t.show();
+                                    }
+                                });
+                                chooseBldDialog.show();
+                                scheduleMealInDB(year, month+1, dayOfMonth, bldChoice);
                             }
                         }, year, month, day);
                 picker.show();
@@ -226,8 +269,7 @@ public class MealDetailFragment extends Fragment {
             myDB.removeFromFavorites(bookmarkURL);
     }
 
-    private void scheduleMealInDB(int year, int month, int day) {
-        Toast.makeText(getContext(), "Scheduled " + mealName + " for " + month + "/" + day + "/" + year, Toast.LENGTH_LONG).show();
+    private void scheduleMealInDB(int year, int month, int day, int bldChoice) {
         String date = month + "/" + day + "/" + year;
         int mealNO = 1;
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
@@ -269,6 +311,16 @@ public class MealDetailFragment extends Fragment {
          */
 
 
+    }
+
+    private void setDateVals(int year, int month, int day) {
+        myYear = year;
+        myMonth = month;
+        myDay = day;
+    }
+
+    private void setBLDchoice(int index) {
+        bldChoice = index;
     }
 
     public interface ScheduleMealListener {

@@ -1,13 +1,10 @@
 package scu.csci187.fall2018.mealtracker.Activities;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.net.Uri;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -24,7 +21,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Filter;
 
 import scu.csci187.fall2018.mealtracker.Classes.APIHandler;
 import scu.csci187.fall2018.mealtracker.Classes.Ingredient;
@@ -252,24 +248,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void addToShoppingList(String bookmarkURL, String mealName) {
-        /*
-        // call shoppinglist fragment add to list
-        ShoppingListFragment slFrag = (ShoppingListFragment) getSupportFragmentManager().findFragmentByTag(TAG_SHOPPING);
-        if(slFrag == null) {
-            slFrag = new ShoppingListFragment();
-            navToFragment(slFrag, TAG_SHOPPING);
-            slFrag.addDataAndRefresh(bookmarkURL, mealName);
-        }
-        else {
-            navToFragment(slFrag, TAG_SHOPPING);
-            slFrag.addDataAndRefresh(bookmarkURL, mealName);
-        }
-        */
-        // get ingredients list using bookmarkURL
         ArrayList<String> ingredientsAsStrings = new ArrayList<>();
         ArrayList<String> bookmarks = new ArrayList<>();
         bookmarks.add(bookmarkURL);
 
+        // grab ingredients from API using bookmarkURL
         ArrayList<Recipe> recipes = new APIHandler().getRecipesFromBookmarks(bookmarks);
         Ingredients ingredients = recipes.get(0).ingredients();
         for (int i = 0; i < ingredients.length(); ++i) {
@@ -281,18 +264,28 @@ public class MainActivity extends AppCompatActivity
         ingredientsAsStrings.clear();
         ingredientsAsStrings.addAll(ingredientSet);
 
-        // build ShoppingListItem into SQLiteMeal to add to DB
         ArrayList<SQLiteIngredient> ingredientsList = new ArrayList<>();
 
         for(int x = 0; x < ingredientsAsStrings.size(); x++) {
             ingredientsList.add(new SQLiteIngredient(ingredientsAsStrings.get(x), false));
         }
         SQLiteMeal thisMeal = new SQLiteMeal(recipes.get(0).name().replaceAll("[^a-zA-Z\\d\\s]", "_"), ingredientsList);
-        Log.d("MAINSHOPPING", thisMeal.getMealName() + " " + thisMeal.getIngredients().get(0).getIngredient());
 
         SQLiteDBManager dbManager = new SQLiteDBManager(this);
         dbManager.addEntry(thisMeal);
         dbManager.close();
+    }
+
+    public void navToFragment(Fragment fragment, String tag) {
+        CURRENT_TAG = tag;
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        fragmentTransaction.replace(R.id.frame, fragment, tag);
+        if(!tag.equals(TAG_FILTERS)) {
+            fragmentTransaction.addToBackStack(null);
+        }
+        fragmentTransaction.commit();
     }
 
     // Implement listener for Filters Fragment
@@ -306,19 +299,15 @@ public class MainActivity extends AppCompatActivity
 
     // Implementation of MadeMealListener interface
     public void afterMadeMealClick() {
-        /*
-            todo: CLEAN UP
-         */
         HomeFragment homeFrag = (HomeFragment) getSupportFragmentManager().findFragmentByTag(TAG_HOME);
-        //homeFrag.notifyAdaptersDataChanged(index);
         navToFragment(homeFrag, TAG_HOME);
     }
 
     // Implementation of ScheduleMealListener interface
     public void showHomeScreenAfterScheduleMeal() {
         FragmentManager fm = getSupportFragmentManager();
-        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);    // clears fragment backstack to prevent returning to scheduler
-        HomeFragment homeFrag = new HomeFragment(); // reinitializes Home screen fragment (lists) from DB
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        HomeFragment homeFrag = new HomeFragment();
         navToFragment(homeFrag, TAG_HOME);
     }
 
@@ -330,18 +319,6 @@ public class MainActivity extends AppCompatActivity
             slFragment = new ShoppingListFragment();
         fm.beginTransaction().detach(slFragment).attach(slFragment).commit();
         CURRENT_TAG = TAG_SHOPPING;
-    }
-
-    public void navToFragment(Fragment fragment, String tag) {
-        CURRENT_TAG = tag;
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        //fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        fragmentTransaction.replace(R.id.frame, fragment, tag);
-        if(!tag.equals(TAG_FILTERS)) {
-            fragmentTransaction.addToBackStack(null);
-        }
-        fragmentTransaction.commit();
     }
 
     @Override

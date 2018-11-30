@@ -23,11 +23,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
+        bindViews();
+        setOnClickListeners();
+    }
+
+    private void bindViews() {
         loginButton = findViewById(R.id.login);
         createAccountButton = findViewById(R.id.createAccount);
         emailInput = findViewById(R.id.email);
         pwInput = findViewById(R.id.pw);
+    }
 
+    private void setOnClickListeners() {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
                     emailInput.setText("");
                     pwInput.setText("");
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    // instantiate user obj, send it in bundle
                     startActivity(intent);
                     finish();
                 }
@@ -64,8 +70,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // to add if more time: salt + hashing function for password
-    // store only hashed pw in DB, hash inputtedPw and then check against DB
     boolean loginSuccessful(String email, String pw) {
         SQLiteUserManager myDB = new SQLiteUserManager(this);
         boolean success = myDB.login(email, pw);

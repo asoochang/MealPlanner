@@ -64,10 +64,7 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
         ArrayList<SQLiteIngredient> ingredients = meal.getIngredients();
 
         for (int i = 0; i < ingredients.size(); i++) {
-            //String sql1 = "insert into " + meal.getMealName() + "(ingredient, checkmark) values (" + ingredients.get(i).getIngredient()+ ", 0)";
-            //Log.d("DBMANAGER", ingredients.get(i));
             ContentValues cv1 = new ContentValues();
-            Log.d("DBMANAGER", ingredients.get(i).getIngredient());
             cv1.put("ingredient", ingredients.get(i).getIngredient());
             cv1.put("checkmark", 0);
 

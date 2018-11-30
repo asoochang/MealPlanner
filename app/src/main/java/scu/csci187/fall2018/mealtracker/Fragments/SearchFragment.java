@@ -74,9 +74,6 @@ public class SearchFragment extends Fragment  {
         bindViews(view);
         addButtonListeners();
 
-        /*
-            TODO: SAVE/RESTORE RVSEARCH STATE NOT WORKING
-         */
         if(savedInstanceState != null) {
             rvSearch.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable("RV_STATE"));
         }
@@ -94,7 +91,6 @@ public class SearchFragment extends Fragment  {
             throw new RuntimeException(context.toString()
                     + " must implement SearchFragmentListener");
         }
-
     }
 
     @Override
@@ -103,9 +99,6 @@ public class SearchFragment extends Fragment  {
         mCallback = null;
     }
 
-    /*
-        TODO: SAVE/RESTORE RVSEARCH STATE NOT WORKING
-     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -152,9 +145,6 @@ public class SearchFragment extends Fragment  {
         mCallback.goToFilters(myInputString);
     }
 
-    /*
-        TODO: implement executeSearch()
-     */
     private void executeSearch() {
         String searchString;
 
@@ -162,17 +152,11 @@ public class SearchFragment extends Fragment  {
 
         // Construct Query
         QueryParam queryParam = new QueryParam();
-
-
-        // TODO implement once I have the necessary methods.
-        // configure queryParams from userPrefs
         queryParam.setQuery(searchString);
         PreferencesTranslator preferencesTranslator = new PreferencesTranslator();
 
         preferencesTranslator.setDietInQueryParam(inputtedFilters, queryParam);
         preferencesTranslator.setHealthLabelsInQueryParam(inputtedFilters, queryParam);
-
-        // execute the search
 
         Query query = new APIHandler().search(queryParam);
         populateSearchListFromAPI(query);
@@ -212,7 +196,6 @@ public class SearchFragment extends Fragment  {
         searchText.setText(inputText);
     }
 
-    // Create then display Meal Detail fragment using mealName
     public void showMealDetail(String bookmarkURL) {
         MealDetailFragment newFragment = new MealDetailFragment();
         Bundle b = new Bundle();
@@ -228,16 +211,14 @@ public class SearchFragment extends Fragment  {
         mCallback.addToShoppingList(bookmarkURL, mealName);
     }
 
-    //public void sendMealToFavorites(String bookmarkURL, String mealName) {
-    //    mCallback.addToFavorites(bookmarkURL);
-    //}
-
     public interface SearchFragmentListener {
         void goToFilters(String inputString);
         void addToShoppingList(String bookmarkURL, String mealName);
     }
 
+    /*
     public interface SearchToFavoritesListener {
         void addMealFromSearchToFavorites(String bookmarkURL, String mealName);
     }
+    */
 }

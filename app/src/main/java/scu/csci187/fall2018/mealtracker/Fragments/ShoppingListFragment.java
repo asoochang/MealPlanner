@@ -28,8 +28,7 @@ import scu.csci187.fall2018.mealtracker.Classes.SQLiteMeal;
 import scu.csci187.fall2018.mealtracker.Classes.SearchRecyclerViewAdapter;
 import scu.csci187.fall2018.mealtracker.R;
 
-public class ShoppingListFragment extends Fragment implements
-                        SearchRecyclerViewAdapter.SearchShoppingListener {
+public class ShoppingListFragment extends Fragment {
 
     private ArrayList<Integer> mealIds;
     private ArrayList<SQLiteMeal> mealData;
@@ -96,7 +95,6 @@ public class ShoppingListFragment extends Fragment implements
 
                                 showRemovalToast(fMealName);
                                 removeCheckboxes(indexToRemove);
-//                                mealData.remove(indexToRemove);
                                 final SQLiteMeal passedMeal = meal;
                                 new SQLiteDBManager(getContext()).clearDatabase(mealData);
                                 removeDataAndRefresh(passedMeal);
@@ -162,36 +160,9 @@ public class ShoppingListFragment extends Fragment implements
          cbData.remove(boxes);
     }
 
-    private void removeMeal(int index) {
-        listContainer.removeView(listContainer.findViewById(mealIds.get(index)));
-    }
-
     private void removeDataAndRefresh(SQLiteMeal meal) {
         mealData.remove(meal);
         writeShoppingListToDisk(mealData);
-        mCallback.refreshShoppingListFragment();
-    }
-
-    public void addDataAndRefresh(String bookmarkURL, String mealName) {
-        ArrayList<String> ingredientsAsStrings = new ArrayList<>();
-        ArrayList<String> bookmarks = new ArrayList<>();
-        bookmarks.add(bookmarkURL);
-
-        ArrayList<Recipe> recipes = new APIHandler().getRecipesFromBookmarks(bookmarks);
-        Ingredients ingredients = recipes.get(0).ingredients();
-        for (int i = 0; i < ingredients.length(); ++i) {
-            Ingredient currentIngredient = ingredients.getIngredientAtIndex(i);
-            ingredientsAsStrings.add(currentIngredient.food());
-        }
-
-        // build ShoppingListItem into SQLiteMeal to add to DB
-        ArrayList<SQLiteIngredient> ingredientsList = new ArrayList<>();
-        for(String s : ingredientsAsStrings) {
-            ingredientsList.add(new SQLiteIngredient(s, false));
-        }
-        SQLiteMeal thisMeal = new SQLiteMeal(mealName, ingredientsList);
-        SQLiteDBManager dbManager = new SQLiteDBManager(getContext());
-        dbManager.addEntry(thisMeal);
         mCallback.refreshShoppingListFragment();
     }
 
@@ -211,6 +182,7 @@ public class ShoppingListFragment extends Fragment implements
         dbManager.writeToDB(mealData);
     }
 
+    /*
     // Implementation of SearchRecyclerViewAdapter.SearchShoppingListener
     public void searchAddToShoppingList(String bookmarkURL, String mealName) {
         ArrayList<String> ingredientsAsStrings = new ArrayList<>();
@@ -233,7 +205,7 @@ public class ShoppingListFragment extends Fragment implements
         SQLiteDBManager dbManager = new SQLiteDBManager(getContext());
         dbManager.addEntry(thisMeal);
         mCallback.refreshShoppingListFragment();
-    }
+    }*/
 
     public interface RefreshShoppingList {
         void refreshShoppingListFragment();

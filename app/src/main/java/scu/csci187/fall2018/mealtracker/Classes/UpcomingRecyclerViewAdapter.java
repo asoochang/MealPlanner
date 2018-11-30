@@ -1,9 +1,7 @@
 package scu.csci187.fall2018.mealtracker.Classes;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,7 +107,7 @@ public class UpcomingRecyclerViewAdapter extends RecyclerView.Adapter<UpcomingRe
 
     }
 
-    // parent activity will implement this method to respond to click events
+    // Interface for parent activity to respond to click events
     public interface ItemClickListener {
         void onClick(View view, int position);
     }

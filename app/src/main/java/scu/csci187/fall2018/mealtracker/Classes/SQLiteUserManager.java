@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
-import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 
 public class SQLiteUserManager extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "nutritionDB";
@@ -115,7 +114,6 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         }
     }
 
-    //Addmeal to history
     public void addMeal (String day, String url, int mealNo){
         ContentValues cv = new ContentValues();
         cv.put("email", getEmail(c));
@@ -174,7 +172,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cursor.close();
         return list;
     }
-    //Favorite Meals as an ArrayList of urls
+
     public ArrayList<String> getFavorites (){
         ArrayList<String> list = new ArrayList<>();
         String urlR;
@@ -392,8 +390,6 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         return rating;
     }
     public UserPreferences getPreferences(){
-
-        //required defaults
         int calLow = 0;
         int calHigh = 1000;
         int dietLabel = 0;
@@ -418,6 +414,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         }
         if (cursor!=null)
             cursor.close();
+
         boolean[] arr = new boolean[11];
         for (int i = 0; i<11; i++)
             arr[i] = ((healthLabel.charAt(i)) == '1');

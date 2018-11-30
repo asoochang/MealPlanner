@@ -32,7 +32,6 @@ import scu.csci187.fall2018.mealtracker.Classes.ImageLoaderFromUrl;
 import scu.csci187.fall2018.mealtracker.Classes.Ingredient;
 import scu.csci187.fall2018.mealtracker.Classes.Ingredients;
 import scu.csci187.fall2018.mealtracker.Classes.Recipe;
-import scu.csci187.fall2018.mealtracker.Classes.RecipeRecord;
 import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.R;
 
@@ -43,7 +42,6 @@ public class MealDetailFragment extends Fragment {
     private RatingBar mealRatingBar;
     private ListView lvIngredients;
     private Button buttonToRecipe, buttonMadeThis, buttonSchedule;
-    private Ingredients ingredients;
     private Recipe r;
 
     private String mealName, picURL, recipeURL, bookmarkURL;
@@ -73,7 +71,7 @@ public class MealDetailFragment extends Fragment {
             mealName = r.name();
             recipeURL = r.linkToInstructions();
             index = getArguments().containsKey("index") ? getArguments().getInt("index") : -1;
-            showMadeButton = false; //getArguments().containsKey("madeThis") && getArguments().getBoolean("madeThis");
+            showMadeButton = false;
         }
 
     }
@@ -84,7 +82,7 @@ public class MealDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.mealdetail_layout, container, false);
 
         if(mealName.isEmpty()) {
-            getFragmentManager().popBackStackImmediate();   // go back to previous fragment
+            getFragmentManager().popBackStackImmediate();
         }
         else {
             ingredientsList = new ArrayList<>();
@@ -109,7 +107,6 @@ public class MealDetailFragment extends Fragment {
             madeMealListener = (MealDetailFragment.MadeMealListener) context;
             scheduleMealListener = (MealDetailFragment.ScheduleMealListener) context;
         }
-
         else {
             throw new RuntimeException(context.toString()
                     + " must implement MadeMealListener and/or ScheduleMealListener");
@@ -200,9 +197,6 @@ public class MealDetailFragment extends Fragment {
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                int chosenYear = 0;
-                int chosenMonth = 0;
-                int chosenDay = 0;
                 DatePickerDialog picker = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
@@ -243,8 +237,6 @@ public class MealDetailFragment extends Fragment {
                                     }
                                 });
                                 chooseBldDialog.show();
-                                //scheduleMealInDB(myYear, myMonth+1, myDay, bldChoice);
-
                             }
 
                         }, year, month, day);
@@ -310,22 +302,6 @@ public class MealDetailFragment extends Fragment {
         ArrayAdapter<String> ingredientsAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_1, ingredientsList);
         lvIngredients.setAdapter(ingredientsAdapter);
-
-
-        /*
-            TODO: grab meal data from API, DB (rating) for display in MealDetail
-            load ingredients strings into ingredientsList
-
-            ArrayAdapter<String> ingredientsAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, ingredientsList);
-            lvIngredients.setAdapter(ingredientsAdapter);
-
-            GRAB RATING FROM DB
-            mealRating =
-            mealRatingBar.setRating(mealRating);
-         */
-
-
     }
 
     private void setDateVals(int year, int month, int day) {

@@ -24,7 +24,6 @@ import scu.csci187.fall2018.mealtracker.Classes.UserPreferences;
 import static android.content.Context.MODE_PRIVATE;
 
 public class PreferencesFragment extends Fragment {
-    private UserPreferences userPrefs;
     private EditText calorieLow, calorieHigh, maxTimeInMinutes;
     private RadioGroup radioDietLabels;
     private RadioButton rbNone, rbLowCarb, rbLowFat, rbHighProtein, rbHighFiber, rbLowSodium;
@@ -42,9 +41,6 @@ public class PreferencesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -151,9 +147,6 @@ public class PreferencesFragment extends Fragment {
                 dietLabel, vegetarian.isChecked(), vegan.isChecked(), pescatarian.isChecked(),
                 kosher.isChecked(), gluten.isChecked(), paleo.isChecked(), shellfish.isChecked(),
                 dairy.isChecked(), treenut.isChecked(), peanut.isChecked(), egg.isChecked());
-
-        // Set member var with val that can be accessed.
-        //this.userPrefs = newPreferences;
 
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
         myDB.updatePreferences(newPreferences);

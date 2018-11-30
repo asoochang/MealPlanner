@@ -6,18 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-import scu.csci187.fall2018.mealtracker.Activities.MainActivity;
-import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.Fragments.SearchFragment;
 import scu.csci187.fall2018.mealtracker.R;
 
@@ -30,9 +25,6 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
     SearchFragment sourceFragment;
     Context mContext;
 
-    SearchShoppingListener mShoppingCallback;
-    SearchFavoriteListener mFavoritesCallback;
-
     public SearchRecyclerViewAdapter(Context context, List<String> meals, List<String> picUrls, List<String> bookmarkURLs,
                                                         SearchFragment sourceFragment) {
         this.meals = meals;
@@ -40,7 +32,6 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         this.mContext = context;
         this.sourceFragment = sourceFragment;
         this.bookmarkURLs = bookmarkURLs;
-        //this.mShoppingCallback = ;
     }
 
     @Override
@@ -145,11 +136,4 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         void onClick(View view, int position);
     }
 
-    public interface SearchShoppingListener {
-        //void searchAddToShoppingList(String bookmarkURL, String mealName);
-    }
-
-    public interface SearchFavoriteListener {
-        void searchAddToFavoritesList();
-    }
 }

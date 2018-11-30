@@ -100,12 +100,11 @@ public class FavoritesRecyclerViewAdapter extends RecyclerView.Adapter<Favorites
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(view.getContext(), "CLICKY", Toast.LENGTH_SHORT).show();
             clickListener.onClick(view, getAdapterPosition()); // call the onClick in the OnItemClickListener
         }
     }
 
-    // parent activity will implement this method to respond to click events
+    // Interface for parent activity to respond to click events
     public interface ItemClickListener {
         void onClick(View view, int position);
     }

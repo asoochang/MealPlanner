@@ -1,9 +1,5 @@
 package scu.csci187.fall2018.mealtracker.Classes;
 
-enum DietLabel {
-    NONE, LOWCARB, LOWFAT, HIGHPROTEIN, HIGHFIBER, LOWSODIUM
-}
-
 public class UserPreferences {
 
     public int calorieLow;  // if both calorieLow = calorieHigh == 0, user did not specify a calorie range

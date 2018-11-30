@@ -13,12 +13,19 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     EditText inFirstName, inLastName, inEmail, inPassword, inHeight, inWeight;
     Button buttonRegister, buttonBack;
+    String fname, lname, email, pw;
+    int height, weight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_account_layout);
 
+        bindViews();
+        setupClickListeners();
+    }
+
+    private void bindViews() {
         inFirstName = findViewById(R.id.inputFirstName);
         inLastName = findViewById(R.id.inputLastName);
         inHeight = findViewById(R.id.inputHeight);
@@ -27,12 +34,12 @@ public class CreateAccountActivity extends AppCompatActivity {
         inPassword = findViewById(R.id.inputPassword);
         buttonRegister = findViewById(R.id.buttonRegister);
         buttonBack = findViewById(R.id.buttonBack);
+    }
 
+    private void setupClickListeners() {
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fname, lname, email, pw;
-                int height, weight;
 
                 fname = inFirstName.getText().toString();
                 lname = inLastName.getText().toString();

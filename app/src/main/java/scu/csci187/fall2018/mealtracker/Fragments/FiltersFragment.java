@@ -46,13 +46,14 @@ public class FiltersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_filters, container, false);
+
         bindViews(view);
         addUIListeners();
 
-        if (tempFilters!=null)
-            populatePreferences(tempFilters);
+        if (tempFilters != null)
+            populateFiltersWithPreferences(tempFilters);
         else
-            populatePreferences(getDBPrefs());
+            populateFiltersWithPreferences(getDBPrefs());
         return view;
     }
 
@@ -80,10 +81,11 @@ public class FiltersFragment extends Fragment {
         return userPrefs;
     }
 
-    public void populatePreferences(UserPreferences userPrefs){
+    public void populateFiltersWithPreferences(UserPreferences userPrefs){
         calorieLow.setText(Integer.toString(userPrefs.calorieLow));
         calorieHigh.setText(Integer.toString(userPrefs.calorieHigh));
         maxTimeInMinutes.setText(Integer.toString(userPrefs.maxTimeInMinutes));
+
         int dietLabel = userPrefs.getDietLabel();
         switch (dietLabel){
             case(0):
@@ -105,6 +107,7 @@ public class FiltersFragment extends Fragment {
                 rbLowSodium.setChecked(true);
                 break;
         }
+
         vegetarian.setChecked(userPrefs.isVegetarian());
         vegan.setChecked(userPrefs.isVegan());
         pescatarian.setChecked(userPrefs.isPescatarian());

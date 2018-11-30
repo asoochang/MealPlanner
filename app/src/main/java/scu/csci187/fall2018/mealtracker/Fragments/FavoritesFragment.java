@@ -26,7 +26,6 @@ public class FavoritesFragment extends Fragment {
     private List<String> meals;
     private List<String> pics;
     private ArrayList<String> bookmarkURLs;
-    private List<RecipeRecord> recipeRecords = new ArrayList<>();
     private List<Recipe> recipes;
 
 

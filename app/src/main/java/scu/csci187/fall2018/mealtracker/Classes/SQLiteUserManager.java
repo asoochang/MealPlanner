@@ -37,9 +37,15 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         String sql3 = "CREATE TABLE IF NOT EXISTS History (email text, day text, mealNo integer, " +
                 "url text, historyID integer primary key autoincrement)";
 
-        db.execSQL(sql1);
-        db.execSQL(sql2);
-        db.execSQL(sql3);
+        db.beginTransaction();
+        try {
+            db.execSQL(sql1);
+            db.execSQL(sql2);
+            db.execSQL(sql3);
+            db.setTransactionSuccessful();
+        }finally {
+            db.endTransaction();
+        }
     }
 
     @Override
@@ -58,9 +64,13 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         cv.put("healthLabel", "00000000000");
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
-        db.insert("User", null, cv);
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        try {
+            db.insert("User", null, cv);
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
+        }
     }
 
     public boolean login(String emailInput, String password) {
@@ -95,7 +105,14 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         String sql = "update User set calLow ="+ calLow +", calHigh ="+ calHigh +", dietLabel ="+
                 dietLabel + ", maxTime ="+ maxTime +", healthLabel ="+ "\"" + healthLabel + "\"" +
                 " where email = " + "\"" + getEmail(c) + "\"";
-        db.execSQL(sql);
+        db.beginTransaction();
+        try {
+            db.execSQL(sql);
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
+        }
     }
 
     //Addmeal to history
@@ -108,15 +125,26 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
-        db.insert("History", null, cv);
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        try {
+            db.insert("History", null, cv);
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
+        }
     }
     public void flagMeal (String url){
         String sql = "update UserMeals set made = 1 where url = " + "\"" + url + "\""+
                 " and email = " + "\"" + getEmail(c) + "\"";
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL(sql);
+        db.beginTransaction();
+        try {
+            db.execSQL(sql);
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
+        }
     }
 
     public ArrayList<RecipeRecord> getMeals (){
@@ -198,18 +226,27 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cv.put("isFavorite", 1);
             cv.put("made", 0);
             SQLiteDatabase db = getWritableDatabase();
-            db.beginTransaction();
-            db.insert("UserMeals", null, cv);
-            db.setTransactionSuccessful();
-            db.endTransaction();
-        } else if (rating != 0 || made != 0) {
+            try {
+                db.beginTransaction();
+                db.insert("UserMeals", null, cv);
+                db.setTransactionSuccessful();
+            }
+            finally {
+                db.endTransaction();
+            }
+        }
+        else if (rating != 0 || made != 0) {
             String sql = "update UserMeals set isFavorite = 1 where url = " + "\"" +  url + "\"" +
                     " and email = " + "\"" + getEmail(c) + "\"";
             SQLiteDatabase db = getWritableDatabase();
             db.beginTransaction();
-            db.execSQL(sql);
-            db.setTransactionSuccessful();
-            db.endTransaction();
+            try {
+                db.execSQL(sql);
+                db.setTransactionSuccessful();
+            }
+            finally {
+                db.endTransaction();
+            }
         }
     }
 
@@ -238,11 +275,25 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         if (rating == 0 && favorite == 1 && made == 0) {
             String sql = "delete from UserMeals where url =" + "\"" + url + "\""+ " where email = " +
                     "\"" + getEmail(c) + "\"";
-            db.execSQL(sql);
+            db.beginTransaction();
+            try {
+                db.execSQL(sql);
+                db.setTransactionSuccessful();
+            }
+            finally {
+                db.endTransaction();
+            }
         } else if (rating != 0 || made != 0) {
             String sql = "update UserMeals set isFavorite = 0 where url = " + "\"" + url + "\"" +
                     " and email = " + "\"" + getEmail(c) + "\"";
-            db.execSQL(sql);
+            db.beginTransaction();
+            try {
+                db.execSQL(sql);
+                db.setTransactionSuccessful();
+            }
+            finally {
+                db.endTransaction();
+            }
         }
     }
     public void updateRating(String url, int newRating){
@@ -275,13 +326,24 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cv.put("isFavorite", 0);
             cv.put("made", 0);
             db.beginTransaction();
-            db.insert("UserMeals", null, cv);
-            db.setTransactionSuccessful();
-            db.endTransaction();
+            try {
+                db.insert("UserMeals", null, cv);
+                db.setTransactionSuccessful();
+            }
+            finally {
+                db.endTransaction();
+            }
         } else if (rating != 0 || made !=0 || favorite != 0) {
             String sql = "update UserMeals set rating =" +newRating+ " where url = " + "\"" + url +
                     "\""+ " and email = " + "\"" + getEmail(c) + "\"";
-            db.execSQL(sql);
+            db.beginTransaction();
+            try {
+                db.execSQL(sql);
+                db.setTransactionSuccessful();
+            }
+            finally {
+                db.endTransaction();
+            }
         }
     }
 

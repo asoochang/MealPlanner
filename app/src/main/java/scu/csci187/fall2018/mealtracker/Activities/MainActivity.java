@@ -1,6 +1,7 @@
 package scu.csci187.fall2018.mealtracker.Activities;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity
 
     private String searchText = "";
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +126,8 @@ public class MainActivity extends AppCompatActivity
                                 CURRENT_TAG = TAG_PREFERENCES;
                                 break;
                             case R.id.action_logout:
+                                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                                startActivity(intent);
                                 finish();
                             default:
                                 navItemIndex = 0;

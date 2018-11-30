@@ -2,6 +2,7 @@ package scu.csci187.fall2018.mealtracker.Classes;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteConstraintException;
@@ -11,17 +12,22 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class SQLiteDBManager extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "shoppingListDB";
     private static final int DATABASE_VERSION = 1;
+    private static String email = "null";
+    Context c;
 
     public SQLiteDBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.c = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text)";
+        String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text, email text)";
         db.execSQL(sql);
     }
 
@@ -30,14 +36,21 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public String getEmail(Context c){
+        SharedPreferences pref = c.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String email = pref.getString("userEmail", null);
+        return email;
+    }
+
     public void initShoppingList() {
         SQLiteDatabase db = getWritableDatabase();
-        String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text)";
+        String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text, email text)";
         db.execSQL(sql);
     }
     public void addEntry(SQLiteMeal meal) {
         ContentValues cv = new ContentValues();
         cv.put("meal", meal.getMealName());
+        cv.put("email", getEmail(c));
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         db.insert("shoppingList",null,  cv);
@@ -70,7 +83,7 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
-        String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text)";
+        String sql = "CREATE TABLE IF NOT EXISTS shoppingList(_id integer primary key autoincrement, meal text, email text)";
         db.execSQL(sql);
         for(int i = 0; i < meals.size(); i++) {
             String currentMeal = meals.get(i).getMealName();
@@ -78,6 +91,7 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
             currentIngredients = meals.get(i).getIngredients();
             ContentValues cv = new ContentValues();
             cv.put("meal", currentMeal);
+            cv.put("email", getEmail(c));
             db.insert("shoppingList", null, cv);
             sql = "CREATE TABLE IF NOT EXISTS " + currentMeal + "(ingredient text PRIMARY KEY, checkmark integer)";
             db.execSQL(sql);
@@ -102,7 +116,7 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
             String sql;
             sql = "drop table if exists " + mealName;
             db.execSQL(sql);
-            sql = "delete from shoppingList where meal="+"\""+mealName+"\"";
+            sql = "delete from shoppingList where meal="+"\""+mealName+"\"" + " and email = " + "\"" + getEmail(c) + "\"";
             db.execSQL(sql);
         }
 
@@ -113,7 +127,7 @@ public class SQLiteDBManager extends SQLiteOpenHelper {
     public ArrayList<SQLiteMeal> getMeals(){
         Cursor cursor;
         try {
-            cursor = this.getReadableDatabase().rawQuery("SELECT meal FROM shoppingList", null);
+            cursor = this.getReadableDatabase().rawQuery("SELECT meal FROM shoppingList where email ="+ "\"" + getEmail(c) + "\"", null);
         } catch (Exception e) {
             cursor = null;
             e.getStackTrace();

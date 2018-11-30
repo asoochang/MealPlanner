@@ -2,31 +2,40 @@ package scu.csci187.fall2018.mealtracker.Classes;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 
 public class SQLiteUserManager extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "nutritionDB";
     private static final int DATABASE_VERSION = 2;
     private static String email = "null";
+    Context c;
 
     public SQLiteUserManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.c=context;
     }
-    public void setEmail(String email){
-        //this.email = email;
+    public String getEmail(Context c){
+        SharedPreferences pref = c.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String email = pref.getString("userEmail", null);
+        return email;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        String sql1 = "CREATE TABLE IF NOT EXISTS User (email text primary key, password text, calLow integer, calHigh integer, dietLabel integer, maxTime integer, healthLabel text)";
-        String sql2 = "CREATE TABLE IF NOT EXISTS UserMeals (/*email text,*/ url text, rating integer, isFavorite integer, made integer, primary key(url)/*, (foreign key (email) references User(email)*/)";
-        String sql3 = "CREATE TABLE IF NOT EXISTS History (/*email text, */day text, mealNo integer, url text, historyID integer primary key autoincrement, /*foreign key (email) references User(email), */foreign key (url) references UserMeals(url))";
+        String sql1 = "CREATE TABLE IF NOT EXISTS User (email text primary key, password text, " +
+                "calLow integer, calHigh integer, dietLabel integer, maxTime integer, healthLabel text)";
+        String sql2 = "CREATE TABLE IF NOT EXISTS UserMeals (email text, url text, rating integer, " +
+                "isFavorite integer, made integer, primary key(url, email))";
+        String sql3 = "CREATE TABLE IF NOT EXISTS History (email text, day text, mealNo integer, " +
+                "url text, historyID integer primary key autoincrement)";
 
         db.execSQL(sql1);
         db.execSQL(sql2);
@@ -44,7 +53,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         cv.put("password", password);
         cv.put("calLow", 0);
         cv.put("calHigh", 1000);
-        cv.put("dietLabel", 1);
+        cv.put("dietLabel", 0);
         cv.put("maxTime", 60);
         cv.put("healthLabel", "00000000000");
         SQLiteDatabase db = getWritableDatabase();
@@ -56,7 +65,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
     public boolean login(String emailInput, String password) {
         String user = "null";
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT email FROM User where email = " + "\"" + emailInput + "\"" + "and password = " + "\""+ password +"\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT email FROM User where email = " +
+                "\"" + emailInput + "\"" + "and password = " + "\""+ password +"\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -74,22 +84,24 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         return false;
     }
 
-    public void updatePreferences(UserPreferences temp){
-        int calHigh = temp.getCalorieHigh();
-        int calLow =  temp.getCalorieLow();
-        int dietLabel =  temp.getDietLabel();
-        int maxTime = temp.getMaxTimeInMinutes();
-        String healthLabel = temp.healthLabelToString();
+    public void updatePreferences(UserPreferences myPreference){
+        int calLow = myPreference.getCalorieLow();
+        int calHigh = myPreference.getCalorieHigh();
+        int dietLabel = myPreference.getDietLabel();
+        int maxTime = myPreference.getMaxTimeInMinutes();
+        String healthLabel = myPreference.healthLabelToString();
 
         SQLiteDatabase db = getWritableDatabase();
-        String sql = "update User set calLow ="+ calLow +", calHigh ="+ calHigh +", dietLabel ="+ dietLabel + ", maxTime ="+ maxTime +", healthLabel ="+ "\"" + healthLabel + "\"";
+        String sql = "update User set calLow ="+ calLow +", calHigh ="+ calHigh +", dietLabel ="+
+                dietLabel + ", maxTime ="+ maxTime +", healthLabel ="+ "\"" + healthLabel + "\"" +
+                " where email = " + "\"" + getEmail(c) + "\"";
         db.execSQL(sql);
     }
 
     //Addmeal to history
     public void addMeal (String day, String url, int mealNo){
         ContentValues cv = new ContentValues();
-        //cv.put("email", email);
+        cv.put("email", getEmail(c));
         cv.put("day", day);
         cv.put("mealNo", mealNo);
         cv.put("url", url);
@@ -101,43 +113,20 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         db.endTransaction();
     }
     public void flagMeal (String url){
-        String sql = "update UserMeals set made = 1 where url = " + "\"" + url + "\"";
+        String sql = "update UserMeals set made = 1 where url = " + "\"" + url + "\""+
+                " and email = " + "\"" + getEmail(c) + "\"";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(sql);
     }
 
-    //Meals on a given date as an ArrayList of RecipeRecords
-    public ArrayList<RecipeRecord> getMealsOn (String day){
-        ArrayList<RecipeRecord> list = new ArrayList<RecipeRecord>();
-        String dayR;
-        int mealNoR;
-        String urlR;
-
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM History where day = " + "\"" + day + "\"", null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
-                try {
-                    dayR = cursor.getString(cursor.getColumnIndexOrThrow("day"));
-                    mealNoR = cursor.getInt(cursor.getColumnIndexOrThrow("mealNo"));
-                    urlR = cursor.getString(cursor.getColumnIndexOrThrow("url"));
-                    list.add(new RecipeRecord(urlR, dayR, mealNoR));
-                }catch (Exception e) {
-                    e.getStackTrace();
-                }
-            };
-        }
-        if (cursor!=null)
-            cursor.close();
-        return list;
-    }
     public ArrayList<RecipeRecord> getMeals (){
         ArrayList<RecipeRecord> list = new ArrayList<>();
         String dayR;
         int mealNoR;
         String urlR;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT day, mealNo, url FROM History", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT day, mealNo, url FROM History" +
+                " where email = " + "\"" + getEmail(c) + "\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -162,7 +151,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         ArrayList<String> list = new ArrayList<>();
         String urlR;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT url FROM UserMeals where isFavorite = 1", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT url FROM UserMeals where isFavorite = 1 and email = " + "\"" + getEmail(c) + "\"", null);
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
@@ -184,7 +173,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int favorite = 0;
         int made = 0;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " + "\"" + url + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " +
+                "\"" + url + "\""+ " and email = " + "\"" + getEmail(c) + "\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -202,7 +192,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cursor.close();
         if (rating == 0 && favorite == 0 && made == 0) {
             ContentValues cv = new ContentValues();
-            //cv.put("email", email);
+            cv.put("email", getEmail(c));
             cv.put("url", url);
             cv.put("rating", 0); // Changed from -1 to 0
             cv.put("isFavorite", 1);
@@ -213,7 +203,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
             db.endTransaction();
         } else if (rating != 0 || made != 0) {
-            String sql = "update UserMeals set isFavorite = 1 where url = " + "\"" +  url + "\"";
+            String sql = "update UserMeals set isFavorite = 1 where url = " + "\"" +  url + "\"" +
+                    " and email = " + "\"" + getEmail(c) + "\"";
             SQLiteDatabase db = getWritableDatabase();
             db.beginTransaction();
             db.execSQL(sql);
@@ -227,7 +218,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int favorite = 0;
         int made = 0;
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " + "\"" + url + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " +
+                "\"" + url + "\""+ " and email = " + "\"" + getEmail(c) + "\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -244,10 +236,12 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         if (cursor!=null)
             cursor.close();
         if (rating == 0 && favorite == 1 && made == 0) {
-            String sql = "delete from UserMeals where url =" + "\"" + url + "\"";
+            String sql = "delete from UserMeals where url =" + "\"" + url + "\""+ " where email = " +
+                    "\"" + getEmail(c) + "\"";
             db.execSQL(sql);
         } else if (rating != 0 || made != 0) {
-            String sql = "update UserMeals set isFavorite = 0 where url = " + "\"" + url + "\"";
+            String sql = "update UserMeals set isFavorite = 0 where url = " + "\"" + url + "\"" +
+                    " and email = " + "\"" + getEmail(c) + "\"";
             db.execSQL(sql);
         }
     }
@@ -256,7 +250,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int favorite = 0;
         int made = 0;
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " + "\"" + url + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating, isFavorite, made FROM UserMeals where url = " +
+                "\"" + url + "\""+ " and email = " + "\"" + getEmail(c) + "\"", null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -274,7 +269,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cursor.close();
         if (rating == 0 && favorite == 0 && made ==0) {
             ContentValues cv = new ContentValues();
-            //cv.put("email", email);
+            cv.put("email", getEmail(c));
             cv.put("url", url);
             cv.put("rating", newRating);
             cv.put("isFavorite", 0);
@@ -284,7 +279,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
             db.endTransaction();
         } else if (rating != 0 || made !=0 || favorite != 0) {
-            String sql = "update UserMeals set rating =" +newRating+ " where url = " + "\"" + url + "\"";
+            String sql = "update UserMeals set rating =" +newRating+ " where url = " + "\"" + url +
+                    "\""+ " and email = " + "\"" + getEmail(c) + "\"";
             db.execSQL(sql);
         }
     }
@@ -293,7 +289,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         int favorite = 0;
         Cursor cursor;
         try {
-            cursor = getReadableDatabase().rawQuery("SELECT isFavorite FROM UserMeals where url = " + "\"" + url + "\"", null);
+            cursor = getReadableDatabase().rawQuery("SELECT isFavorite FROM UserMeals where url = " +
+                    "\"" + url + "\""+ " and email = " + "\"" + getEmail(c) + "\"", null);
         } catch (Exception e) {
             cursor = null;
             e.getStackTrace();
@@ -316,7 +313,8 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
     public int getRating (String url){
         int rating = 0;
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating FROM UserMeals where url = " + "\""  + url + "\"", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT rating FROM UserMeals where url = " +
+                "\""  + url + "\""+ " and email = " + "\"" + getEmail(c) + "\"", null);
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
@@ -335,12 +333,13 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
         //required defaults
         int calLow = 0;
-        int calHigh = 9999;
+        int calHigh = 1000;
         int dietLabel = 0;
-        int maxTime = 999;
+        int maxTime = 60;
         String healthLabel = "00000000000";
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT calLow, calHigh, dietLabel, maxTime, healthLabel FROM User", null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT calLow, calHigh, dietLabel, maxTime, healthLabel FROM User where email =" +
+                "\"" + getEmail(c) + "\"", null);
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
@@ -357,7 +356,6 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         }
         if (cursor!=null)
             cursor.close();
-
         boolean[] arr = new boolean[11];
         for (int i = 0; i<11; i++)
             arr[i] = ((healthLabel.charAt(i)) == '1');

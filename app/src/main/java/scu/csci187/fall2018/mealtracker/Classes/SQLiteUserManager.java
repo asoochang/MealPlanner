@@ -16,9 +16,11 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "nutritionDB";
     private static final int DATABASE_VERSION = 2;
     private static String email = "null";
+    Context c;
 
     public SQLiteUserManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.c=context;
     }
     public String getEmail(Context c){
         SharedPreferences pref = c.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
@@ -82,7 +84,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         return false;
     }
 
-    public void updatePreferences(UserPreferences myPreference, Context c){
+    public void updatePreferences(UserPreferences myPreference){
         int calLow = myPreference.getCalorieLow();
         int calHigh = myPreference.getCalorieHigh();
         int dietLabel = myPreference.getDietLabel();
@@ -97,7 +99,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
     }
 
     //Addmeal to history
-    public void addMeal (String day, String url, int mealNo, Context c){
+    public void addMeal (String day, String url, int mealNo){
         ContentValues cv = new ContentValues();
         cv.put("email", getEmail(c));
         cv.put("day", day);
@@ -110,14 +112,14 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         db.setTransactionSuccessful();
         db.endTransaction();
     }
-    public void flagMeal (String url, Context c){
+    public void flagMeal (String url){
         String sql = "update UserMeals set made = 1 where url = " + "\"" + url + "\""+
                 " and email = " + "\"" + getEmail(c) + "\"";
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(sql);
     }
 
-    public ArrayList<RecipeRecord> getMeals (Context c){
+    public ArrayList<RecipeRecord> getMeals (){
         ArrayList<RecipeRecord> list = new ArrayList<>();
         String dayR;
         int mealNoR;
@@ -145,7 +147,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         return list;
     }
     //Favorite Meals as an ArrayList of urls
-    public ArrayList<String> getFavorites (Context c){
+    public ArrayList<String> getFavorites (){
         ArrayList<String> list = new ArrayList<>();
         String urlR;
 
@@ -166,7 +168,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         return list;
     }
 
-    public void addToFavorites(String url, Context c){
+    public void addToFavorites(String url){
         int rating = 0;
         int favorite = 0;
         int made = 0;
@@ -211,7 +213,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         }
     }
 
-    public void removeFromFavorites(String url, Context c) {
+    public void removeFromFavorites(String url) {
         int rating = 0;
         int favorite = 0;
         int made = 0;
@@ -243,7 +245,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             db.execSQL(sql);
         }
     }
-    public void updateRating(String url, int newRating, Context c){
+    public void updateRating(String url, int newRating){
         int rating = 0;
         int favorite = 0;
         int made = 0;
@@ -283,7 +285,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         }
     }
 
-    public boolean isFavorite (String url, Context c){
+    public boolean isFavorite (String url){
         int favorite = 0;
         Cursor cursor;
         try {
@@ -308,7 +310,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cursor.close();
         return (favorite==1);
     }
-    public int getRating (String url, Context c){
+    public int getRating (String url){
         int rating = 0;
 
         Cursor cursor = getReadableDatabase().rawQuery("SELECT rating FROM UserMeals where url = " +
@@ -327,7 +329,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
             cursor.close();
         return rating;
     }
-    public UserPreferences getPreferences(Context c){
+    public UserPreferences getPreferences(){
 
         //required defaults
         int calLow = 0;

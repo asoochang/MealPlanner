@@ -87,7 +87,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
                 String mealBookmark = bookmarkURLs.get(position);
 
                 SQLiteUserManager myDB = new SQLiteUserManager(mContext);
-                myDB.addToFavorites(mealBookmark, mContext);
+                myDB.addToFavorites(mealBookmark);
 
                 vHolder.tvAddFavorite.setText("                          ");
                 vHolder.addToFavorites.setImageResource(R.drawable.ic_done);

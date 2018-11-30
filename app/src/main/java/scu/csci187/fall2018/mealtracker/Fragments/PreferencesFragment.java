@@ -91,7 +91,7 @@ public class PreferencesFragment extends Fragment {
 
     public void populatePreferencesFromDB(){
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        UserPreferences userPrefs = myDB.getPreferences(getContext());
+        UserPreferences userPrefs = myDB.getPreferences();
 
         calorieLow.setText(Integer.toString(userPrefs.calorieLow));
         calorieHigh.setText(Integer.toString(userPrefs.calorieHigh));
@@ -156,7 +156,7 @@ public class PreferencesFragment extends Fragment {
         //this.userPrefs = newPreferences;
 
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        myDB.updatePreferences(newPreferences, getContext());
+        myDB.updatePreferences(newPreferences);
     }
 
     public void addRadioListener() {

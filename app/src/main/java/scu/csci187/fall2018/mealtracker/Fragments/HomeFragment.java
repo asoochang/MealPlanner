@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment  {
     public void populateListDataFromDB() {
 
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        ArrayList<RecipeRecord> recipeRecords = myDB.getMeals(getContext());
+        ArrayList<RecipeRecord> recipeRecords = myDB.getMeals();
         ArrayList<String> bookmarkedMeals = new ArrayList<>();
         ArrayList<Recipe> recipes;
 

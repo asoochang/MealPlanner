@@ -76,7 +76,7 @@ public class FiltersFragment extends Fragment {
 
     public UserPreferences getDBPrefs() {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        UserPreferences userPrefs = myDB.getPreferences(getContext());
+        UserPreferences userPrefs = myDB.getPreferences();
         return userPrefs;
     }
 

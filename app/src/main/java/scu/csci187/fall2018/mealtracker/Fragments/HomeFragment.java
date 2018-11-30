@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment  {
             Recipe currentRecipe = recipes.get(i);
             // Getting new date every iteration because of edge case where loop is running
             // at the moment it changes from 11:59 PM to 12:00 AM
-            if (recipeRecords.get(i).getDate().compareTo(new Date()) >= 0) {
+            if ( !recipeRecords.get(i).isInHistory() ) {
                 upcomingMeals.add(currentRecipe.name());
                 upcomingDates.add(recipeRecords.get(i).getDateString());
                 upcomingPics.add(currentRecipe.imageUrl());

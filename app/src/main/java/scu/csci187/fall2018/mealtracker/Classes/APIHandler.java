@@ -6,7 +6,6 @@ package scu.csci187.fall2018.mealtracker.Classes;
         import java.io.BufferedReader;
         import java.io.IOException;
         import java.io.InputStreamReader;
-        import java.lang.reflect.Array;
         import java.net.MalformedURLException;
         import java.net.URL;
         import java.util.ArrayList;
@@ -34,13 +33,9 @@ public class APIHandler extends AsyncTask<String, Void, JSONObject> {
 
                 try {
                     json = new APIHandler().execute( formattedLink ).get();
-                } catch (ExecutionException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                     json = new JSONObject();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    json = new JSONObject();
-
                 }
 
                 Recipe returnedRecipe = new Recipe(json);
@@ -67,9 +62,7 @@ public class APIHandler extends AsyncTask<String, Void, JSONObject> {
 
         try {
             jsonObject = this.execute(assembledQuery).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 

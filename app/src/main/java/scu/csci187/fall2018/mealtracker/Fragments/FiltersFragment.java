@@ -26,6 +26,7 @@ public class FiltersFragment extends Fragment {
             dairy, treenut, peanut, egg;
     int lowCalorie, highCalorie, maxTime;
     Button buttonSavePrefs;
+    public static UserPreferences tempFilters = null;
 
     private FiltersFragmentListener mCallback;
 
@@ -48,8 +49,10 @@ public class FiltersFragment extends Fragment {
         bindViews(view);
         addUIListeners();
 
-        populatePreferencesFromDB();
-
+        if (tempFilters!=null)
+            populatePreferences(tempFilters);
+        else
+            populatePreferences(getDBPrefs());
         return view;
     }
 
@@ -71,9 +74,13 @@ public class FiltersFragment extends Fragment {
         mCallback = null;
     }
 
-    public void populatePreferencesFromDB(){
+    public UserPreferences getDBPrefs() {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        UserPreferences userPrefs = myDB.getPreferences();
+        UserPreferences userPrefs = myDB.getPreferences(getContext());
+        return userPrefs;
+    }
+
+    public void populatePreferences(UserPreferences userPrefs){
         calorieLow.setText(Integer.toString(userPrefs.calorieLow));
         calorieHigh.setText(Integer.toString(userPrefs.calorieHigh));
         maxTimeInMinutes.setText(Integer.toString(userPrefs.maxTimeInMinutes));
@@ -184,6 +191,8 @@ public class FiltersFragment extends Fragment {
                 dietLabel, vegetarian.isChecked(), vegan.isChecked(), pescatarian.isChecked(),
                 kosher.isChecked(), gluten.isChecked(), paleo.isChecked(), shellfish.isChecked(),
                 dairy.isChecked(), treenut.isChecked(), peanut.isChecked(), egg.isChecked());
+
+        this.tempFilters = filters;
 
         //send filters to search fragment, go back to search
         mCallback.sendFiltersToSearch(filters);

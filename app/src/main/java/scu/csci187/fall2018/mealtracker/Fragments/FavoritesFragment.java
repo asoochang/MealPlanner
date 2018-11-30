@@ -58,7 +58,7 @@ public class FavoritesFragment extends Fragment {
         pics = new ArrayList<>();
 
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        ArrayList<String> myBookmarkURLs = myDB.getFavorites();
+        ArrayList<String> myBookmarkURLs = myDB.getFavorites(getContext());
         for (String bookmark : myBookmarkURLs){
             System.out.println("Bookmark holds: " + bookmark);
             System.out.flush();

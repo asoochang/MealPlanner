@@ -1,6 +1,7 @@
 package scu.csci187.fall2018.mealtracker.Fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,12 +13,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.R;
 import scu.csci187.fall2018.mealtracker.Classes.UserPreferences;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class PreferencesFragment extends Fragment {
     private UserPreferences userPrefs;
@@ -87,7 +91,8 @@ public class PreferencesFragment extends Fragment {
 
     public void populatePreferencesFromDB(){
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        UserPreferences userPrefs = myDB.getPreferences();
+        UserPreferences userPrefs = myDB.getPreferences(getContext());
+
         calorieLow.setText(Integer.toString(userPrefs.calorieLow));
         calorieHigh.setText(Integer.toString(userPrefs.calorieHigh));
         maxTimeInMinutes.setText(Integer.toString(userPrefs.maxTimeInMinutes));
@@ -151,7 +156,7 @@ public class PreferencesFragment extends Fragment {
         //this.userPrefs = newPreferences;
 
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        myDB.updatePreferences(newPreferences);
+        myDB.updatePreferences(newPreferences, getContext());
     }
 
     public void addRadioListener() {
@@ -171,6 +176,7 @@ public class PreferencesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 savePreferencesToDB();
+                Toast.makeText(getContext(), "Preferences saved", Toast.LENGTH_SHORT).show();
             }
         });
     }

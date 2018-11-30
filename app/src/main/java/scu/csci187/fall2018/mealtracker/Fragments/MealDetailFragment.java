@@ -258,38 +258,38 @@ public class MealDetailFragment extends Fragment {
     private void setupRatingBarAndFavorite() {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
 
-        mealIsFavorited = myDB.isFavorite(bookmarkURL);
+        mealIsFavorited = myDB.isFavorite(bookmarkURL, getContext());
         if(mealIsFavorited)
             ivFavorite.setImageResource(R.drawable.ic_favorite);
         else
             ivFavorite.setImageResource(R.drawable.ic_favorite_no);
-        mealRating = myDB.getRating(bookmarkURL);
+        mealRating = myDB.getRating(bookmarkURL, getContext());
         mealRatingBar.setRating(mealRating);
     }
 
     private void updateUserMealRatingInDB(int newRating) {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        myDB.updateRating(bookmarkURL, newRating);
+        myDB.updateRating(bookmarkURL, newRating, getContext());
     }
 
     private void updateMealFavoriteInDB(boolean isFavorited) {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
         if(isFavorited)
-            myDB.addToFavorites(bookmarkURL);
+            myDB.addToFavorites(bookmarkURL, getContext());
         else
-            myDB.removeFromFavorites(bookmarkURL);
+            myDB.removeFromFavorites(bookmarkURL, getContext());
     }
 
     private void scheduleMealInDB(int year, int month, int day, int bldChoice) {
         String date = month + "/" + day + "/" + year;
         int mealNO = bldChoice;
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        myDB.addMeal(date, bookmarkURL, mealNO);
+        myDB.addMeal(date, bookmarkURL, mealNO, getContext());
     }
 
     private void updateMadeMealInDB() {
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        myDB.flagMeal(bookmarkURL);
+        myDB.flagMeal(bookmarkURL, getContext());
     }
 
     public void populateMealData() {

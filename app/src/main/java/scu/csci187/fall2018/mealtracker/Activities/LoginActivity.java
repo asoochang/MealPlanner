@@ -1,6 +1,7 @@
 package scu.csci187.fall2018.mealtracker.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -67,8 +68,12 @@ public class LoginActivity extends AppCompatActivity {
     boolean loginSuccessful(String email, String pw) {
         SQLiteUserManager myDB = new SQLiteUserManager(this);
         boolean success = myDB.login(email, pw);
-        //if (success)
-            //myDB.setEmail(email);
+        if (success) {
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("userEmail", email);
+            editor.apply();
+        }
         myDB.close();
         return success;
     }

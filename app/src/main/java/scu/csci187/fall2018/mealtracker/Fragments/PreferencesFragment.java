@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import java.util.ArrayList;
 
 import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.R;
@@ -20,6 +23,7 @@ public class PreferencesFragment extends Fragment {
     private UserPreferences userPrefs;
     private EditText calorieLow, calorieHigh, maxTimeInMinutes;
     private RadioGroup radioDietLabels;
+    private RadioButton rbNone, rbLowCarb, rbLowFat, rbHighProtein, rbHighFiber, rbLowSodium;
     private int selectedRadioId = -1;
     private CheckBox vegetarian, vegan, pescatarian, kosher, gluten, paleo, shellfish,
                         dairy, treenut, peanut, egg;
@@ -56,6 +60,12 @@ public class PreferencesFragment extends Fragment {
         calorieHigh = view.findViewById(R.id.calorieHigh);
         maxTimeInMinutes = view.findViewById(R.id.timeHigh);
         radioDietLabels = view.findViewById(R.id.radioDietLabels);
+        rbNone = view.findViewById(R.id.settingsNone);
+        rbLowCarb = view.findViewById(R.id.settingsLowCarb);
+        rbLowFat = view.findViewById(R.id.settingsLowFat);
+        rbHighProtein = view.findViewById(R.id.settingsHighProtein);
+        rbHighFiber = view.findViewById(R.id.settingsHighFiber);
+        rbLowSodium = view.findViewById(R.id.settingsLowSodium);
         vegetarian = view.findViewById(R.id.checkboxVegetarian);
         vegan = view.findViewById(R.id.checkboxVegan);
         pescatarian = view.findViewById(R.id.checkboxPescatarian);
@@ -77,7 +87,42 @@ public class PreferencesFragment extends Fragment {
 
     public void populatePreferencesFromDB(){
         SQLiteUserManager myDB = new SQLiteUserManager(getContext());
-        UserPreferences prefFromDb = myDB.getPreferences();
+        UserPreferences userPrefs = myDB.getPreferences();
+        calorieLow.setText(Integer.toString(userPrefs.calorieLow));
+        calorieHigh.setText(Integer.toString(userPrefs.calorieHigh));
+        maxTimeInMinutes.setText(Integer.toString(userPrefs.maxTimeInMinutes));
+        int dietLabel = userPrefs.getDietLabel();
+        switch (dietLabel){
+            case(0):
+                rbNone.setChecked(true);
+                break;
+            case(1):
+                rbLowCarb.setChecked(true);
+                break;
+            case(2):
+                rbLowFat.setChecked(true);
+                break;
+            case(3):
+                rbHighProtein.setChecked(true);
+                break;
+            case(4):
+                rbHighFiber.setChecked(true);
+                break;
+            case(5):
+                rbLowSodium.setChecked(true);
+                break;
+        }
+        vegetarian.setChecked(userPrefs.isVegetarian());
+        vegan.setChecked(userPrefs.isVegan());
+        pescatarian.setChecked(userPrefs.isPescatarian());
+        kosher.setChecked(userPrefs.isKosher());
+        gluten.setChecked(userPrefs.isGluten());
+        paleo.setChecked(userPrefs.isPaleo());
+        shellfish.setChecked(userPrefs.isShellfish());
+        dairy.setChecked(userPrefs.isDairy());
+        treenut.setChecked(userPrefs.isTreenut());
+        peanut.setChecked(userPrefs.isPeanut());
+        egg.setChecked(userPrefs.isEgg());
     }
 
     public void savePreferencesToDB() {
@@ -87,20 +132,26 @@ public class PreferencesFragment extends Fragment {
         tempMaxCal = calorieHigh.getText().toString();
         tempMaxTime = maxTimeInMinutes.getText().toString();
 
+        int dietLabel = 0;
+        if(rbLowCarb.isChecked()) dietLabel =1;
+        else if(rbLowFat.isChecked())dietLabel =2;
+        else if(rbHighProtein.isChecked()) dietLabel=3;
+        else if(rbHighFiber.isChecked()) dietLabel=4;
+        else if(rbLowSodium.isChecked()) dietLabel=5;
+
         lowCalorie = (tempMinCal.isEmpty()) ? 0 : Integer.parseInt(tempMinCal);
         highCalorie = (tempMaxCal.isEmpty()) ? 0 : Integer.parseInt(tempMaxCal);
         maxTime = (tempMaxTime.isEmpty()) ? 0 : Integer.parseInt(tempMaxTime);
         UserPreferences newPreferences = new UserPreferences(lowCalorie, highCalorie, maxTime,
-                selectedRadioId, vegetarian.isChecked(), vegan.isChecked(), pescatarian.isChecked(),
+                dietLabel, vegetarian.isChecked(), vegan.isChecked(), pescatarian.isChecked(),
                 kosher.isChecked(), gluten.isChecked(), paleo.isChecked(), shellfish.isChecked(),
                 dairy.isChecked(), treenut.isChecked(), peanut.isChecked(), egg.isChecked());
 
         // Set member var with val that can be accessed.
-        this.userPrefs = newPreferences;
-        /*
-            TODO: ERROR CHECKING INPUT FOR CALORIES, TIME
-                 SAVE TO DATABASE
-         */
+        //this.userPrefs = newPreferences;
+
+        SQLiteUserManager myDB = new SQLiteUserManager(getContext());
+        myDB.updatePreferences(newPreferences);
     }
 
     public void addRadioListener() {

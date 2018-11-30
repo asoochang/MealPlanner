@@ -74,10 +74,15 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         return false;
     }
 
-    public void updatePreferences(String email, int calHigh, int calLow, int dietLabel, int maxTime, String healthLabel){
+    public void updatePreferences(UserPreferences temp){
+        int calHigh = temp.getCalorieHigh();
+        int calLow =  temp.getCalorieLow();
+        int dietLabel =  temp.getDietLabel();
+        int maxTime = temp.getMaxTimeInMinutes();
+        String healthLabel = temp.healthLabelToString();
+
         SQLiteDatabase db = getWritableDatabase();
-        String sql = "update History set calLow ="+ calLow +", calHigh ="+ calHigh +", dietLabel ="+ dietLabel +
-                ", maxTime ="+ maxTime +", healthLabel ="+ "\"" + healthLabel + "\"";
+        String sql = "update User set calLow ="+ calLow +", calHigh ="+ calHigh +", dietLabel ="+ dietLabel + ", maxTime ="+ maxTime +", healthLabel ="+ "\"" + healthLabel + "\"";
         db.execSQL(sql);
     }
 
@@ -330,12 +335,12 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
 
         //required defaults
         int calLow = 0;
-        int calHigh = 1000;
+        int calHigh = 9999;
         int dietLabel = 0;
-        int maxTime = 60;
+        int maxTime = 999;
         String healthLabel = "00000000000";
 
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT calLow, calHigh, dietLabel, maxTime FROM User where email =" + email, null);
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT calLow, calHigh, dietLabel, maxTime, healthLabel FROM User", null);
         if (cursor != null) {
             cursor.moveToFirst();
             for(boolean cursorBounds = true; cursorBounds; cursorBounds = cursor.moveToNext()) {
@@ -352,6 +357,7 @@ public class SQLiteUserManager extends SQLiteOpenHelper {
         }
         if (cursor!=null)
             cursor.close();
+
         boolean[] arr = new boolean[11];
         for (int i = 0; i<11; i++)
             arr[i] = ((healthLabel.charAt(i)) == '1');

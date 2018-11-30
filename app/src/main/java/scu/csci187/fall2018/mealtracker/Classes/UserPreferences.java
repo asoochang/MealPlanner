@@ -102,4 +102,44 @@ public class UserPreferences {
     public boolean isEgg() {
         return egg;
     }
+
+    public String healthLabelToString(){
+        StringBuilder sb1 = new StringBuilder();
+
+        if(isVegetarian()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isVegan()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isPescatarian()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isKosher()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isGluten()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isPaleo()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isShellfish()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isDairy()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isTreenut()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isPeanut()) sb1.append('1');
+        else sb1.append('0');
+
+        if(isEgg()) sb1.append('1');
+        else sb1.append('0');
+
+        return sb1.toString();
+    }
+
 }

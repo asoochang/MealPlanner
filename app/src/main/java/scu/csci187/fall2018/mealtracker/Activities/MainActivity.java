@@ -126,9 +126,9 @@ public class MainActivity extends AppCompatActivity
                                 CURRENT_TAG = TAG_PREFERENCES;
                                 break;
                             case R.id.action_logout:
-                                finish();
                                 Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                                 startActivity(intent);
+                                finish();
                             default:
                                 navItemIndex = 0;
                         }

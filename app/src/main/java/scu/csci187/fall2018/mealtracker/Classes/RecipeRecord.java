@@ -52,6 +52,23 @@ public class RecipeRecord {
         this.getDateFromString(this.dateString);
     }
 
+    public boolean isInHistory() {
+        Date currentDate = new Date();
+        boolean comparisonOfYears = this.getDate().getYear() >= currentDate.getYear();
+        boolean comparisonOfMonths = this.getDate().getMonth() >= currentDate.getMonth();
+        boolean comparisonOfDays = this.getDate().getDay() >= currentDate.getDay();
+
+        if (comparisonOfYears){
+            if (comparisonOfMonths){
+                if (comparisonOfDays){
+                    return false;
+                }
+            }
+
+        }
+        return true;
+    }
+
     public Date getDate() {
         return this.date;
     }

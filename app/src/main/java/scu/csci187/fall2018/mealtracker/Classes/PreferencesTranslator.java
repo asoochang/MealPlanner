@@ -1,9 +1,5 @@
 package scu.csci187.fall2018.mealtracker.Classes;
 
-import android.support.v7.widget.RecyclerViewAccessibilityDelegate;
-
-import java.util.ArrayList;
-
 public class PreferencesTranslator {
 
     public PreferencesTranslator(){
@@ -38,7 +34,6 @@ public class PreferencesTranslator {
                     return;
             }
         }
-
     }
 
     public void setHealthLabelsInQueryParam(UserPreferences userPref, QueryParam qp) {

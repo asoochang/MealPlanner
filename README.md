@@ -7,6 +7,7 @@ Code files are in directory: https://github.com/csci187Nutrition/MealPlanner/tre
 Layouts and other resources are in directory:
 https://github.com/csci187Nutrition/MealPlanner/tree/initialbranch/app/src/main/res
 
+NOTE: Multi User support is not available.
 
 People who worked on this project:
 

@@ -16,7 +16,7 @@ public class RecipeRecord {
         int monthIndex = 0, dayIndex = 1, yearIndex = 2;
         // Subtract 1 because month is indexed starting at 0 for Jan
         // And values inputted are in standard human month numbering
-        int month = Integer.parseInt(splitInput[monthIndex]) - 1;
+        int month = Integer.parseInt(splitInput[monthIndex]);
         int day = Integer.parseInt(splitInput[dayIndex]);
         int year = Integer.parseInt(splitInput[yearIndex]);
 
@@ -52,8 +52,10 @@ public class RecipeRecord {
         this.getDateFromString(this.dateString);
     }
 
-    public boolean isInHistory() {
+    public boolean isInFuture() {
         Date currentDate = new Date();
+        System.out.println("MyDate >> "+  this.getDate().toString());
+        System.out.println("CurrDate >>" +  currentDate.toString());
         boolean comparisonOfYears = this.getDate().getYear() >= currentDate.getYear();
         boolean comparisonOfMonths = this.getDate().getMonth() >= currentDate.getMonth();
         boolean comparisonOfDays = this.getDate().getDay() >= currentDate.getDay();

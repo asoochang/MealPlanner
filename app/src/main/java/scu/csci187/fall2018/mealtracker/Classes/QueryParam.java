@@ -110,7 +110,8 @@ public class QueryParam {
         }
 
         // Add API ID and APP ID to URL
-        result = result + "&app_id=b957081d&app_key=889e79d32df59ed1621b6247b075e26a";
+        String apiKeys = "&app_id=b957081d&app_key=889e79d32df59ed1621b6247b075e26a";
+        result = result + apiKeys;
         return result;
     }
 

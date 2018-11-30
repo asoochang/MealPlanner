@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(loginSuccessful(email, pw)) {
                     emailInput.setText("");
                     pwInput.setText("");
+                    finish();
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                     // instantiate user obj, send it in bundle
                     startActivity(intent);

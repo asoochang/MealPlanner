@@ -38,7 +38,6 @@ public class PreferencesTranslator {
                     return;
             }
         }
-
     }
 
     public void setHealthLabelsInQueryParam(UserPreferences userPref, QueryParam qp) {

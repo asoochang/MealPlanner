@@ -56,14 +56,6 @@ public class Recipe {
         }
     }
 
-    public String sourceName () {
-        try {
-            return value.getString("source");
-        } catch (JSONException e) {
-            return "";
-        }
-    }
-
     public String linkToInstructions () {
         try {
             return value.getString("url");
@@ -80,14 +72,8 @@ public class Recipe {
         }
     }
 
-
-
     public double timeToCook () {
-//        try {
             return (double) value.optDouble("totalTime");
-//        } catch (JSONException e) {
-//            return -1;
-//        }
     }
 
     public int calories () {

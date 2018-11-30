@@ -31,6 +31,7 @@ import scu.csci187.fall2018.mealtracker.Classes.PreferencesTranslator;
 import scu.csci187.fall2018.mealtracker.Classes.Query;
 import scu.csci187.fall2018.mealtracker.Classes.QueryParam;
 import scu.csci187.fall2018.mealtracker.Classes.Recipe;
+import scu.csci187.fall2018.mealtracker.Classes.SQLiteUserManager;
 import scu.csci187.fall2018.mealtracker.Classes.SearchRecyclerViewAdapter;
 import scu.csci187.fall2018.mealtracker.Classes.UserPreferences;
 import scu.csci187.fall2018.mealtracker.R;

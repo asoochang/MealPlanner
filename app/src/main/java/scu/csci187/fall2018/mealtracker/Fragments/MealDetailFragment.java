@@ -201,7 +201,7 @@ public class MealDetailFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                setDateVals(year, month+1, dayOfMonth);
+                                setDateVals(year, month, dayOfMonth);
 
                                 AlertDialog.Builder chooseBldDialog = new AlertDialog.Builder(getContext());
                                 chooseBldDialog.setTitle("Choose a meal time: ");

@@ -1,6 +1,10 @@
 package scu.csci187.fall2018.mealtracker.Classes;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import static java.util.Calendar.*;
 
 public class RecipeRecord {
 
@@ -8,7 +12,7 @@ public class RecipeRecord {
     private String name;
     private String dateString;
     private int time;
-    private Date date;
+    private Calendar date;
 
     private void getDateFromString(String input) {
         String[] splitInput = input.split("/");
@@ -20,7 +24,7 @@ public class RecipeRecord {
         int day = Integer.parseInt(splitInput[dayIndex]);
         int year = Integer.parseInt(splitInput[yearIndex]);
 
-        this.date = new GregorianCalendar(year, month, day).getTime();
+        this.date = new GregorianCalendar(year, month, day);
     }
 
     public RecipeRecord (String bookmarkURL, String dateString, int time) {
@@ -53,25 +57,27 @@ public class RecipeRecord {
     }
 
     public boolean isInFuture() {
-        Date currentDate = new Date();
+        Calendar currentDate = new GregorianCalendar();
+        currentDate.set(currentDate.MINUTE,0);
+        currentDate.set(currentDate.SECOND,0);
+        currentDate.set(currentDate.MILLISECOND,0);
+
         System.out.println("MyDate >> "+  this.getDate().toString());
         System.out.println("CurrDate >>" +  currentDate.toString());
-        boolean comparisonOfYears = this.getDate().getYear() >= currentDate.getYear();
-        boolean comparisonOfMonths = this.getDate().getMonth() >= currentDate.getMonth();
-        boolean comparisonOfDays = this.getDate().getDay() >= currentDate.getDay();
+        System.out.flush();
+        boolean myYearIsInFuture = this.getDate().get(Calendar.YEAR) >= currentDate.get(Calendar.YEAR);
+        boolean myMonthIsInFuture = this.getDate().get(Calendar.MONTH) >= currentDate.get(Calendar.MONTH);
+        boolean myDayIsInFuture = this.getDate().get(Calendar.DAY_OF_MONTH) >= currentDate.get(Calendar.DAY_OF_MONTH);
 
-        if (comparisonOfYears){
-            if (comparisonOfMonths){
-                if (comparisonOfDays){
-                    return false;
-                }
-            }
+        if (myYearIsInFuture)
+            if (myMonthIsInFuture)
+                if (myDayIsInFuture)
+                    return true;
 
-        }
-        return true;
+        return false;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return this.date;
     }
 
